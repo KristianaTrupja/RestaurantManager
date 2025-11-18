@@ -9,7 +9,7 @@ export default function WaiterDashboard() {
   return (
     <div className="container">
       <h2 className="text-2xl font-bold mb-4">Tables</h2>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {tables.map((table) => (
           <TableCard key={table.id} table={table} />
         ))}

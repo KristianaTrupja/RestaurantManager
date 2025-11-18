@@ -4,6 +4,7 @@ export interface Table {
   id: string;
   number: number;
   status: TableStatus;
+  assignedWaiter: string;
   orders: { name: string; quantity: number; price: number }[];
 }
 

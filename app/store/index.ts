@@ -6,15 +6,15 @@ import authReducer from "./slices/authSlice";
 import cartReducer from "./slices/cartSlice";
 import tableReducer from "./slices/tableSlice";
 import errorReducer from "./slices/errorSlice";
-import themeReducer from "./slices/themeSlice";
+import modalReducer from "./slices/modalSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     cart: cartReducer,
+    modal: modalReducer,
     tables: tableReducer,
     errors: errorReducer,
-    theme: themeReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

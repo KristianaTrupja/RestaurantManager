@@ -133,5 +133,9 @@
   .container {
     @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-30;
   }
+
+  .frosted-glass{
+    @apply backdrop-blur-xs text-white shadow-[0_0_2px_rgba(255,255,255,0.4)];
+  }
 }
 

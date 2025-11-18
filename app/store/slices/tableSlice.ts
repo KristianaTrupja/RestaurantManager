@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import TableState from "../../types/Table";
+import { TableState } from "../../types/Table";
 
 
 const initialState: TableState = {
@@ -8,6 +8,7 @@ const initialState: TableState = {
       id: "1",
       number: 1,
       status: "free",
+      assignedWaiter: "null",
       orders: [
         { name: "Pizza Margherita", quantity: 2, price: 12 },
         { name: "Coke", quantity: 2, price: 2.5 },
@@ -16,17 +17,72 @@ const initialState: TableState = {
     {
       id: "2",
       number: 2,
+      status: "free",
+      assignedWaiter: "null",
+      orders: [
+        { name: "Pizza Margherita", quantity: 2, price: 12 },
+        { name: "Coke", quantity: 2, price: 2.5 },
+      ],
+    },
+    {
+      id: "3",
+      number: 3,
+      status: "free",
+      assignedWaiter: "null",
+      orders: [
+        { name: "Pizza Margherita", quantity: 2, price: 12 },
+        { name: "Coke", quantity: 2, price: 2.5 },
+      ],
+    },
+    {
+      id: "4",
+      number: 4,
+      status: "waiting",
+      assignedWaiter: "null",
+      orders: [
+        { name: "Pizza Margherita", quantity: 2, price: 12 },
+        { name: "Coke", quantity: 2, price: 2.5 },
+      ],
+    },
+    {
+      id: "5",
+      number: 5,
       status: "taken",
+      assignedWaiter: "Kristiana Trupja",
       orders: [
         { name: "Sushi Roll", quantity: 1, price: 15 },
         { name: "Water", quantity: 1, price: 1 },
       ],
     },
     {
-      id: "3",
-      number: 3,
+      id: "6",
+      number: 6,
       status: "served",
-      orders: [],
+      assignedWaiter: "Relando Vrapi",
+      orders: [
+        { name: "Sushi Roll", quantity: 1, price: 15 },
+        { name: "Water", quantity: 1, price: 1 },
+      ],
+    },
+        {
+      id: "7",
+      number: 7,
+      status: "served",
+      assignedWaiter: "Kristiana Trupja",
+      orders: [
+        { name: "Sushi Roll", quantity: 1, price: 15 },
+        { name: "Water", quantity: 1, price: 1 },
+      ],
+    },
+        {
+      id: "8",
+      number: 8,
+      status: "served",
+      assignedWaiter: "Jetmir Ahmati",
+      orders: [
+        { name: "Sushi Roll", quantity: 1, price: 15 },
+        { name: "Water", quantity: 1, price: 1 },
+      ],
     },
   ],
 };
