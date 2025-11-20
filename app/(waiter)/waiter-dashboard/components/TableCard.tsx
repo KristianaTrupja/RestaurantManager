@@ -1,6 +1,6 @@
 import { useAppDispatch } from "@/app/store/hooks";
 import { openModal } from "@/app/store/slices/modalSlice";
-import { markTableTaken } from "@/app/store/slices/tableSlice";
+import { markTableTaken, markTableWaiting } from "@/app/store/slices/tableSlice";
 import { Table } from "@/app/types/Table";
 import { Button } from "@/components/ui/button";
 
@@ -25,18 +25,19 @@ export default function TableCard({ table }: { table: Table }) {
       onClick={() =>
         dispatch(
           openModal({
-            title: "Mark table as taken?",
-            content: "Are you sure you want to mark this table?",
-            onConfirm: () => dispatch(markTableTaken(table.id)),
+            title: `Table ${table.number}`,
+            tableId: table.id,
+            orders: table.orders,
           })
         )
       }
     >
       {/* Status Circle */}
-      {(table.assignedWaiter === "Kristiana Trupja") && <div
-        className={`absolute top-3 right-3 w-3 h-3 rounded-full border border-white/40 ${statusColor}`}
-      ></div>}
-  
+      {table.assignedWaiter === "Kristiana Trupja" && (
+        <div
+          className={`absolute top-3 right-3 w-3 h-3 rounded-full border border-white/40 ${statusColor}`}
+        ></div>
+      )}
 
       {/* Table Number */}
       <h3 className="text-xl font-semibold mb-1">Table {table.number}</h3>
@@ -52,10 +53,23 @@ export default function TableCard({ table }: { table: Table }) {
       )}
 
       {/* Progress Bar / Status Line */}
-      <div className="absolute bottom-10 w-3/5 h-2 rounded-full overflow-hidden bg-white/20">
+      <div className="sm:absolute sm:bottom-10 w-3/5 h-2 rounded-full overflow-hidden bg-white/20 mt-2">
         <div className={`h-full rounded-full ${statusColor}`}></div>
       </div>
-
+      {/* Button when waiting */}
+      {table.status === "free" && (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            dispatch(markTableWaiting(table.id));
+          }}
+          variant="outgreen"
+          size="sm"
+          className="mt-2"
+        >
+          Mark as taken
+        </Button>
+      )}
       {/* Button when waiting */}
       {table.status === "waiting" && (
         <Button
@@ -67,7 +81,7 @@ export default function TableCard({ table }: { table: Table }) {
           size="sm"
           className="mt-2"
         >
-          Mark as Taken
+          Assign to yourself
         </Button>
       )}
     </div>

@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { NavBar } from "./components/globals/Navbar";
-import Modal from "./components/globals/Modal";
+import TableModal from "./(waiter)/waiter-dashboard/components/TablePopup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +33,8 @@ export default function RootLayout({
         <NavBar />
         <Providers>
           {children}
-          <Modal />
+          {/* <Modal /> */}
+          <TableModal />
         </Providers>
       </body>
     </html>

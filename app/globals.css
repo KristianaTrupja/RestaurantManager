@@ -131,7 +131,7 @@
   }
 
   .container {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-30;
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 2xl:py-30;
   }
 
   .frosted-glass{

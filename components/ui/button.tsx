@@ -10,10 +10,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        purple:
+          "bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white focus-visible:ring-purple-500/20 dark:focus-visible:ring-purple-500/40",
+        orange:
+          "bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white focus-visible:ring-orange-500/20 dark:focus-visible:ring-orange-500/40",
+        disabled: "bg-gray-800 text-white cursor-not-allowed",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outyellow:
           "bg-transparent text-yellow-500 bg-white/5 hover:bg-transparent focus-visible:ring-yellow-500/20 dark:focus-visible:ring-yellow-500/40 dark:bg-yellow-500/60",
+         outgreen:
+          "bg-transparent text-green-500 bg-white/5 hover:bg-transparent focus-visible:ring-green-500/20 dark:focus-visible:ring-green-500/40 dark:bg-green-500/60",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
@@ -25,7 +32,7 @@ const buttonVariants = cva(
       size: {
         default: "px-3 py-1 has-[>svg]:px-3",
         sm: "rounded-sm gap-1.5 px-3 has-[>svg]:px-3 py-1 text-sm",
-        lg: "rounded-md px-6 has-[>svg]:px-4",
+        lg: "rounded-md px-6 has-[>svg]:px-4 py-2 min-w-[150px]",
         icon: "size-9",
         "icon-sm": "size-8",
         "icon-lg": "size-10",

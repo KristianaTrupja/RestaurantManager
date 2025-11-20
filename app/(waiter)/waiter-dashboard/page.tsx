@@ -6,6 +6,7 @@ import TableCard from "./components/TableCard";
 export default function WaiterDashboard() {
   const tables = useAppSelector((state) => state.tables.list);
 
+  console.log(tables,"tables");
   return (
     <div className="container">
       <h2 className="text-2xl font-bold mb-4">Tables</h2>
@@ -17,3 +18,7 @@ export default function WaiterDashboard() {
     </div>
   );
 }
+
+
+
+
