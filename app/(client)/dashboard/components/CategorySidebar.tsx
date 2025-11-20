@@ -19,7 +19,7 @@ export default function CategorySidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent className="border-r frosted-glass ">
+      <SidebarContent className="frosted-glass">
         <SidebarGroup>
           <SidebarGroupLabel className="text-lg font-semibold">
             Menu Categories
