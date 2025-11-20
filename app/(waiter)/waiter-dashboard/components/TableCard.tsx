@@ -1,6 +1,9 @@
 import { useAppDispatch } from "@/app/store/hooks";
 import { openModal } from "@/app/store/slices/modalSlice";
-import { markTableTaken, markTableWaiting } from "@/app/store/slices/tableSlice";
+import {
+  markTableTaken,
+  markTableWaiting,
+} from "@/app/store/slices/tableSlice";
 import { Table } from "@/app/types/Table";
 import { Button } from "@/components/ui/button";
 
@@ -16,6 +19,8 @@ export default function TableCard({ table }: { table: Table }) {
       ? "bg-blue-500"
       : table.status === "served"
       ? "bg-purple-500"
+      : table.status === "cleaning"
+      ? "bg-red-500"
       : "bg-gray-300";
 
   return (
@@ -23,13 +28,7 @@ export default function TableCard({ table }: { table: Table }) {
       className="relative p-4 flex flex-col items-center justify-center aspect-square rounded-xl frosted-glass z-50 hover:bg-[rgba(255,255,255,0.06)] hover:scale-103
                  bg-[rgba(255,255,255,0.07)] shadow-md hover:shadow-lg transition cursor-pointer"
       onClick={() =>
-        dispatch(
-          openModal({
-            title: `Table ${table.number}`,
-            tableId: table.id,
-            orders: table.orders,
-          })
-        )
+        dispatch(openModal({ tableId: table.id }))
       }
     >
       {/* Status Circle */}

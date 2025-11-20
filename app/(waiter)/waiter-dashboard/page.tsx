@@ -1,10 +1,11 @@
 "use client";
 
+import { RootState } from "@/app/store";
 import { useAppSelector } from "../../store/hooks";
 import TableCard from "./components/TableCard";
 
 export default function WaiterDashboard() {
-  const tables = useAppSelector((state) => state.tables.list);
+  const tables = useAppSelector((state: RootState) => state.tables.list);
 
   console.log(tables,"tables");
   return (
