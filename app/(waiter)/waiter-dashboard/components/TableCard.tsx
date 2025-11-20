@@ -25,11 +25,9 @@ export default function TableCard({ table }: { table: Table }) {
 
   return (
     <div
-      className="relative p-4 flex flex-col items-center justify-center aspect-square rounded-xl frosted-glass z-50 hover:bg-[rgba(255,255,255,0.06)] hover:scale-103
+      className="relative p-3 2xl:p-4 flex flex-col items-center justify-center aspect-square rounded-xl frosted-glass z-50 hover:bg-[rgba(255,255,255,0.06)] hover:scale-103
                  bg-[rgba(255,255,255,0.07)] shadow-md hover:shadow-lg transition cursor-pointer"
-      onClick={() =>
-        dispatch(openModal({ tableId: table.id }))
-      }
+      onClick={() => dispatch(openModal({ tableId: table.id }))}
     >
       {/* Status Circle */}
       {table.assignedWaiter === "Kristiana Trupja" && (
@@ -52,7 +50,7 @@ export default function TableCard({ table }: { table: Table }) {
       )}
 
       {/* Progress Bar / Status Line */}
-      <div className="sm:absolute sm:bottom-10 w-3/5 h-2 rounded-full overflow-hidden bg-white/20 mt-2">
+      <div className="sm:absolute sm:bottom-5 2xl:bottom-10 w-3/5 h-2 rounded-full overflow-hidden bg-white/20 mt-2">
         <div className={`h-full rounded-full ${statusColor}`}></div>
       </div>
       {/* Button when waiting */}
