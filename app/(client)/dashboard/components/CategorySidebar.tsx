@@ -1,48 +1,33 @@
 "use client";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-} from "@/components/ui/sidebar";
+import React, { useState } from "react";
 import { categories } from "@/app/mock-data/mockMenu";
-import { UtensilsCrossed } from "lucide-react";
-import { useState } from "react";
 
-export default function CategorySidebar() {
-  const [activeCategory, setActiveCategory] = useState<string>("Starters");
+interface SidebarProps {
+  selected: string;
+  onSelect: (category: string) => void;
+}
 
+export default function CategorySidebar({ selected, onSelect }: SidebarProps) {
   return (
-    <Sidebar>
-      <SidebarContent className="frosted-glass">
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-lg font-semibold">
-            Menu Categories
-          </SidebarGroupLabel>
+    <div className="w-64 frosted-glass h-screen p-4 bg-[rgba(255,255,255,0.2)] rounded-r-2xl fixed top-20 left-0">
+      <h2 className="text-xl font-semibold mb-4">Categories</h2>
 
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {categories.map((cat) => (
-                <SidebarMenuItem key={cat}>
-                  <SidebarMenuButton
-                    onClick={() => setActiveCategory(cat)}
-                    isActive={activeCategory === cat}
-                    className="flex items-center gap-2"
-                  >
-                    <UtensilsCrossed className="h-4 w-4" />
-                    <span>{cat}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+      <ul className="space-y-2">
+        {categories.map((category) => (
+          <li
+            key={category}
+            onClick={() => onSelect(category)}
+            className={`p-2 rounded cursor-pointer ${
+              selected === category
+                ? "bg-white text-black"
+                : "hover:bg-gray-100/20 text-white"
+            }`}
+          >
+            {category}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

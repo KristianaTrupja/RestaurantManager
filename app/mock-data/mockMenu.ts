@@ -23,6 +23,7 @@ export const menuItems = [
     name: "Bruschetta",
     price: 4.5,
     description: "Grilled bread topped with tomatoes and olive oil",
+    image: "https://safrescobaldistatic.blob.core.windows.net/media/2022/11/PIZZA-MARGHERITA.jpg"
   },
   {
     id: 2,
@@ -30,6 +31,7 @@ export const menuItems = [
     name: "Chicken Wings",
     price: 7.0,
     description: "Crispy wings with BBQ sauce",
+    image: "https://www.recipetineats.com/tachyon/2024/11/New-Oreleans-chicken-wings_1.jpg"
   },
 
   // Salads
@@ -39,6 +41,7 @@ export const menuItems = [
     name: "Caesar Salad",
     price: 6.5,
     description: "Lettuce, parmesan, croutons, Caesar dressing",
+    image: ""
   },
 
   // Pizza
@@ -48,6 +51,7 @@ export const menuItems = [
     name: "Margherita",
     price: 8.0,
     description: "Tomato sauce, mozzarella, basil",
+    image: ""
   },
 
   // Pasta
@@ -57,6 +61,7 @@ export const menuItems = [
     name: "Spaghetti Carbonara",
     price: 9.0,
     description: "Pancetta, pecorino, egg, black pepper",
+    image: ""
   },
 
   // Burgers
@@ -66,6 +71,7 @@ export const menuItems = [
     name: "Classic Cheeseburger",
     price: 10.5,
     description: "Beef patty, cheddar, lettuce, tomato",
+    image: ""
   },
 
   // Main Course
@@ -75,6 +81,7 @@ export const menuItems = [
     name: "Chicken Alfredo",
     price: 11.0,
     description: "Grilled chicken with creamy Alfredo sauce",
+    image: ""
   },
 
   // Sushi
@@ -84,6 +91,7 @@ export const menuItems = [
     name: "California Roll",
     price: 9.5,
     description: "Crab, avocado, cucumber",
+    image: ""
   },
 
   // Grill
@@ -93,6 +101,7 @@ export const menuItems = [
     name: "Grilled Steak",
     price: 15.0,
     description: "300g beef steak grilled to perfection",
+    image: ""
   },
 
   // Seafood
@@ -102,6 +111,7 @@ export const menuItems = [
     name: "Grilled Salmon",
     price: 14.0,
     description: "Fresh salmon with lemon butter sauce",
+    image: ""
   },
 
   // Desserts
@@ -111,6 +121,7 @@ export const menuItems = [
     name: "Tiramisu",
     price: 5.5,
     description: "Coffee-flavoured Italian dessert",
+    image: ""
   },
 
   // Drinks
@@ -120,6 +131,7 @@ export const menuItems = [
     name: "Coca Cola",
     price: 2.5,
     description: "Soft drink",
+    image: ""
   },
 
   // Cocktails
@@ -129,6 +141,7 @@ export const menuItems = [
     name: "Mojito",
     price: 6.0,
     description: "Rum, mint, lime, sugar, soda",
+    image: ""
   },
 
   // Wines
@@ -138,6 +151,7 @@ export const menuItems = [
     name: "Red House Wine",
     price: 4.5,
     description: "Glass of red wine",
+    image: ""
   },
 
   // Coffee & Tea
@@ -147,5 +161,6 @@ export const menuItems = [
     name: "Cappuccino",
     price: 3.0,
     description: "Espresso with steamed milk",
+    image: ""
   },
 ];

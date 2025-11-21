@@ -1,19 +1,20 @@
+"use client";
 
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { useState } from "react";
+import MenuGrid from "./components/MenuGrid";
 import CategorySidebar from "./components/CategorySidebar";
 
-export default function ClientDashboard() {
-  return (
-    
-    <SidebarProvider>
-    <div className="flex h-screen">
-      <CategorySidebar />
+export default function MenuPage() {
+  const [selected, setSelected] = useState("Starters");
 
-      <div className="flex-1 p-6">
-        <h1 className="text-2xl font-bold">Client Dashboard</h1>
-        <p>Select a category from the sidebar.</p>
+  return (
+    <div className="flex">
+      <CategorySidebar selected={selected} onSelect={setSelected} />
+
+      <div className="flex-1">
+        <h1 className="text-2xl font-bold p-6">{selected}</h1>
+        <MenuGrid category={selected} />
       </div>
     </div>
-    </SidebarProvider>
   );
 }
