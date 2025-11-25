@@ -41,7 +41,7 @@ export const menuItems = [
     name: "Caesar Salad",
     price: 6.5,
     description: "Lettuce, parmesan, croutons, Caesar dressing",
-    image: ""
+    image: "https://cdn.loveandlemons.com/wp-content/uploads/2024/12/caesar-salad.jpg"
   },
 
   // Pizza
@@ -51,7 +51,7 @@ export const menuItems = [
     name: "Margherita",
     price: 8.0,
     description: "Tomato sauce, mozzarella, basil",
-    image: ""
+    image: "https://au.ooni.com/cdn/shop/articles/20220211142645-margherita-9920.jpg?v=1737368217&width=1080"
   },
 
   // Pasta
@@ -61,7 +61,7 @@ export const menuItems = [
     name: "Spaghetti Carbonara",
     price: 9.0,
     description: "Pancetta, pecorino, egg, black pepper",
-    image: ""
+    image: "https://www.allrecipes.com/thmb/Vg2cRidr2zcYhWGvPD8M18xM_WY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/11973-spaghetti-carbonara-ii-DDMFS-4x3-6edea51e421e4457ac0c3269f3be5157.jpg"
   },
 
   // Burgers
@@ -71,7 +71,7 @@ export const menuItems = [
     name: "Classic Cheeseburger",
     price: 10.5,
     description: "Beef patty, cheddar, lettuce, tomato",
-    image: ""
+    image: "https://rhubarbandcod.com/wp-content/uploads/2022/06/The-Classic-Cheeseburger-1.jpg"
   },
 
   // Main Course
@@ -81,7 +81,7 @@ export const menuItems = [
     name: "Chicken Alfredo",
     price: 11.0,
     description: "Grilled chicken with creamy Alfredo sauce",
-    image: ""
+    image: "https://www.allrecipes.com/thmb/ziUOvj4f_me5yvZhYCUy0n4IKbQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/276725-creamy-chicken-alfredo-VAT-001-Beauty-4x3-c4b026db5cb349f4b8fd627c56f91a42.jpg"
   },
 
   // Sushi
@@ -91,7 +91,7 @@ export const menuItems = [
     name: "California Roll",
     price: 9.5,
     description: "Crab, avocado, cucumber",
-    image: ""
+    image: "https://upload.wikimedia.org/wikipedia/commons/9/9f/California_Sushi_%2826571101885%29.jpg"
   },
 
   // Grill
