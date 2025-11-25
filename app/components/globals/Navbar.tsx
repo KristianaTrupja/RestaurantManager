@@ -1,6 +1,11 @@
+"use client"
+import { useAppDispatch } from "@/app/store/hooks";
+import { openModal } from "@/app/store/slices/modalSlice";
 import { LogOut, UserRound } from "lucide-react";
 
 export function NavBar() {
+  
+  const dispatch = useAppDispatch();
   return (
     <div className="z-10 py-5 px-10 frosted-glass bg-[rgba(255,255,255,0.2)] md:w-1/2 rounded-b-3xl m-auto flex items-center justify-between">
       <h3>Ulliri Order System</h3>
@@ -12,6 +17,13 @@ export function NavBar() {
             <button className="p-2 w-fit h-fit rounded-md bg-zinc-600/80 hover:bg-zinc-600/95 active:bg-zinc-700/80 shadow-[0_0_1px_rgba(255,255,255,.5)] transition-colors">
                 <LogOut width={20}/>
             </button>
+             <button
+      className="relative p-2"
+      onClick={() => dispatch(openModal({ type: "cart" }))}
+    >
+      🛒
+      {/* optional cart count */}
+    </button>
         </div>
     </div>
   );

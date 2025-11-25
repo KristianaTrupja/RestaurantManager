@@ -27,7 +27,7 @@ export default function TableCard({ table }: { table: Table }) {
     <div
       className="relative p-3 2xl:p-4 flex flex-col items-center justify-center aspect-square rounded-xl frosted-glass z-50 hover:bg-[rgba(255,255,255,0.06)] hover:scale-103
                  bg-[rgba(255,255,255,0.07)] shadow-md hover:shadow-lg transition cursor-pointer"
-      onClick={() => dispatch(openModal({ tableId: table.id }))}
+      onClick={() => dispatch(openModal({ type: "table", tableId: table.id }))}
     >
       {/* Status Circle */}
       {table.assignedWaiter === "Kristiana Trupja" && (
