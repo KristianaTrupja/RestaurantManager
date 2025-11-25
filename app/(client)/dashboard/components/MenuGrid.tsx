@@ -5,7 +5,7 @@ export default function MenuGrid({ category }: { category: string }) {
   const filtered = menuItems.filter((item) => item.category === category);
 
   return (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-5 gap-4 ml-70">
+    <div className="p-6 grid grid-cols-1 md:grid-cols-5 gap-4 md:ml-70">
       {filtered.map((item) => (
         <ProductCard key={item.id} item={item} />
       ))}
