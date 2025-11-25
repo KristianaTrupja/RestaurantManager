@@ -21,6 +21,8 @@ const buttonVariants = cva(
           "bg-transparent text-yellow-500 bg-white/5 hover:bg-transparent focus-visible:ring-yellow-500/20 dark:focus-visible:ring-yellow-500/40 dark:bg-yellow-500/60",
          outgreen:
           "bg-transparent text-green-500 bg-white/5 hover:bg-transparent focus-visible:ring-green-500/20 dark:focus-visible:ring-green-500/40 dark:bg-green-500/60",
+         outred:
+          "bg-transparent text-red-500 bg-white/5 hover:bg-transparent focus-visible:ring-red-500/20 dark:focus-visible:ring-red-500/40 dark:bg-red-500/60",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:

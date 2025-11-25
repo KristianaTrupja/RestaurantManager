@@ -2,18 +2,31 @@
 
 import { useState } from "react";
 import MenuGrid from "./components/MenuGrid";
-import CategorySidebar from "./components/CategorySidebar";
+import Sidebar from "@/app/components/globals/Sidebar";
+import { categories } from "@/app/mock-data/mockMenu";
 
 export default function MenuPage() {
-  const [selected, setSelected] = useState("Starters");
+  const [selectedCategory, setSelectedCategory] = useState("Starters");
 
   return (
-    <div className="flex flex-col sm:flex-row">
-      <CategorySidebar selected={selected} onSelect={setSelected} />
+    <div className="flex flex-col md:flex-row">
+      <Sidebar
+        items={categories}
+        selected={selectedCategory}
+        onSelect={setSelectedCategory}
+        horizontalClassName="mt-4"
+        renderItem={(cat, isSelected) => (
+          <span>
+            {cat}
+          </span>
+        )}
+      />
 
       <div className="flex-1">
-        <h1 className="text-2xl font-bold p-6 hidden 0md:block">{selected}</h1>
-        <MenuGrid category={selected} />
+        <h1 className="text-2xl font-bold p-6 hidden 0md:block">
+          {selectedCategory}
+        </h1>
+        <MenuGrid category={selectedCategory} />
       </div>
     </div>
   );

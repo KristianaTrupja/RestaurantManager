@@ -7,6 +7,7 @@ import cartReducer from "./slices/cartSlice";
 import tableReducer from "./slices/tableSlice";
 import errorReducer from "./slices/errorSlice";
 import modalReducer from "./slices/modalSlice";
+import menuReducer from "./slices/menuSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     cart: cartReducer,
     modal: modalReducer,
     tables: tableReducer,
+    menu: menuReducer,
     errors: errorReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },

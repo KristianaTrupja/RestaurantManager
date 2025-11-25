@@ -23,7 +23,8 @@ export const menuItems = [
     name: "Bruschetta",
     price: 4.5,
     description: "Grilled bread topped with tomatoes and olive oil",
-    image: "https://safrescobaldistatic.blob.core.windows.net/media/2022/11/PIZZA-MARGHERITA.jpg"
+    image: "https://safrescobaldistatic.blob.core.windows.net/media/2022/11/PIZZA-MARGHERITA.jpg",
+    available: false,
   },
   {
     id: 2,
@@ -31,7 +32,9 @@ export const menuItems = [
     name: "Chicken Wings",
     price: 7.0,
     description: "Crispy wings with BBQ sauce",
-    image: "https://www.recipetineats.com/tachyon/2024/11/New-Oreleans-chicken-wings_1.jpg"
+    image: "https://www.recipetineats.com/tachyon/2024/11/New-Oreleans-chicken-wings_1.jpg",
+    available: true,
+
   },
 
   // Salads
@@ -41,7 +44,8 @@ export const menuItems = [
     name: "Caesar Salad",
     price: 6.5,
     description: "Lettuce, parmesan, croutons, Caesar dressing",
-    image: "https://cdn.loveandlemons.com/wp-content/uploads/2024/12/caesar-salad.jpg"
+    image: "https://cdn.loveandlemons.com/wp-content/uploads/2024/12/caesar-salad.jpg",
+    available: true,
   },
 
   // Pizza
@@ -51,7 +55,8 @@ export const menuItems = [
     name: "Margherita",
     price: 8.0,
     description: "Tomato sauce, mozzarella, basil",
-    image: "https://au.ooni.com/cdn/shop/articles/20220211142645-margherita-9920.jpg?v=1737368217&width=1080"
+    image: "https://au.ooni.com/cdn/shop/articles/20220211142645-margherita-9920.jpg?v=1737368217&width=1080",
+    available: false,
   },
 
   // Pasta
@@ -61,7 +66,8 @@ export const menuItems = [
     name: "Spaghetti Carbonara",
     price: 9.0,
     description: "Pancetta, pecorino, egg, black pepper",
-    image: "https://www.allrecipes.com/thmb/Vg2cRidr2zcYhWGvPD8M18xM_WY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/11973-spaghetti-carbonara-ii-DDMFS-4x3-6edea51e421e4457ac0c3269f3be5157.jpg"
+    image: "https://www.allrecipes.com/thmb/Vg2cRidr2zcYhWGvPD8M18xM_WY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/11973-spaghetti-carbonara-ii-DDMFS-4x3-6edea51e421e4457ac0c3269f3be5157.jpg",
+    available: true,
   },
 
   // Burgers
@@ -71,7 +77,8 @@ export const menuItems = [
     name: "Classic Cheeseburger",
     price: 10.5,
     description: "Beef patty, cheddar, lettuce, tomato",
-    image: "https://rhubarbandcod.com/wp-content/uploads/2022/06/The-Classic-Cheeseburger-1.jpg"
+    image: "https://rhubarbandcod.com/wp-content/uploads/2022/06/The-Classic-Cheeseburger-1.jpg",
+    available: true,
   },
 
   // Main Course
@@ -81,7 +88,8 @@ export const menuItems = [
     name: "Chicken Alfredo",
     price: 11.0,
     description: "Grilled chicken with creamy Alfredo sauce",
-    image: "https://www.allrecipes.com/thmb/ziUOvj4f_me5yvZhYCUy0n4IKbQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/276725-creamy-chicken-alfredo-VAT-001-Beauty-4x3-c4b026db5cb349f4b8fd627c56f91a42.jpg"
+    image: "https://www.allrecipes.com/thmb/ziUOvj4f_me5yvZhYCUy0n4IKbQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/276725-creamy-chicken-alfredo-VAT-001-Beauty-4x3-c4b026db5cb349f4b8fd627c56f91a42.jpg",
+    available: true,
   },
 
   // Sushi
@@ -91,7 +99,8 @@ export const menuItems = [
     name: "California Roll",
     price: 9.5,
     description: "Crab, avocado, cucumber",
-    image: "https://upload.wikimedia.org/wikipedia/commons/9/9f/California_Sushi_%2826571101885%29.jpg"
+    image: "https://upload.wikimedia.org/wikipedia/commons/9/9f/California_Sushi_%2826571101885%29.jpg",
+    available: true,
   },
 
   // Grill
@@ -101,7 +110,8 @@ export const menuItems = [
     name: "Grilled Steak",
     price: 15.0,
     description: "300g beef steak grilled to perfection",
-    image: ""
+    image: "https://www.seriouseats.com/thmb/DohQC_iADRKgJPdXvcxSjsPA930=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2016__06__20110516-cowboy-steak-kenji-lopez-alt-bb4a825bd05b4e91b7672bc1603043a8.jpg",
+    available: true,
   },
 
   // Seafood
@@ -111,7 +121,8 @@ export const menuItems = [
     name: "Grilled Salmon",
     price: 14.0,
     description: "Fresh salmon with lemon butter sauce",
-    image: ""
+    image: "https://static01.nyt.com/images/2024/02/28/multimedia/LH-seafood-boil-gktl/LH-seafood-boil-gktl-googleFourByThree.jpg",
+    available: true,
   },
 
   // Desserts
@@ -121,7 +132,8 @@ export const menuItems = [
     name: "Tiramisu",
     price: 5.5,
     description: "Coffee-flavoured Italian dessert",
-    image: ""
+    image: "https://www.giallozafferano.com/images/260-26067/Tiramisu_1200x800.jpg",
+    available: true,
   },
 
   // Drinks
@@ -131,7 +143,8 @@ export const menuItems = [
     name: "Coca Cola",
     price: 2.5,
     description: "Soft drink",
-    image: ""
+    image: "https://upload.wikimedia.org/wikipedia/commons/2/27/Coca_Cola_Flasche_-_Original_Taste.jpg",
+    available: true,
   },
 
   // Cocktails
@@ -141,7 +154,8 @@ export const menuItems = [
     name: "Mojito",
     price: 6.0,
     description: "Rum, mint, lime, sugar, soda",
-    image: ""
+    image: "",
+    available: true,
   },
 
   // Wines
@@ -151,7 +165,8 @@ export const menuItems = [
     name: "Red House Wine",
     price: 4.5,
     description: "Glass of red wine",
-    image: ""
+    image: "",
+    available: true,
   },
 
   // Coffee & Tea
@@ -161,6 +176,7 @@ export const menuItems = [
     name: "Cappuccino",
     price: 3.0,
     description: "Espresso with steamed milk",
-    image: ""
+    image: "",
+    available: true,
   },
 ];

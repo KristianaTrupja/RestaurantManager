@@ -1,5 +1,5 @@
 import { menuItems } from "@/app/mock-data/mockMenu";
-import ProductCard from "./ProductCard";
+import ProductCard from "./ProductCart";
 
 export default function MenuGrid({ category }: { category: string }) {
   const filtered = menuItems.filter((item) => item.category === category);
