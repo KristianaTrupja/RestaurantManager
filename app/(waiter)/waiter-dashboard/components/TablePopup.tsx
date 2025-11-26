@@ -111,7 +111,7 @@ export default function TablePopup() {
         {/* Buttons */}
         {orders.length > 0 && (
           <div className="flex justify-between gap-3 mt-4">
-            {table.status !== "served" ? (
+            {(table.status !== "served" && table.status != "finished") ? (
               <Button
                 onClick={() => {
                   dispatch(markTableServed(table.id));

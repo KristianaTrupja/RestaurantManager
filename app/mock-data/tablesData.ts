@@ -46,8 +46,8 @@ export const initialState: TableState = {
     {
       id: "4",
       number: 4,
-      status: "waiting",
-      assignedWaiter: "null",
+      status: "finished",
+      assignedWaiter: "Kristiana Trupja",
       orders: [
         { id: "1", name: "Pizza Margherita", quantity: 2, price: 12, total: 24, round: 1 },
         { id: "2", name: "Coke", quantity: 2, price: 2.5, total: 5, round: 1 },

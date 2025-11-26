@@ -19,6 +19,8 @@ export default function TableCard({ table }: { table: Table }) {
       ? "bg-blue-500"
       : table.status === "served"
       ? "bg-purple-500"
+      : table.status === "finished"
+      ? "bg-red-500"
       : "bg-gray-300";
 
   return (

@@ -8,6 +8,7 @@ import tableReducer from "./slices/tableSlice";
 import errorReducer from "./slices/errorSlice";
 import modalReducer from "./slices/modalSlice";
 import menuReducer from "./slices/menuSlice";
+import ordersReducer from "./slices/orderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     modal: modalReducer,
     tables: tableReducer,
     menu: menuReducer,
+    orders: ordersReducer,
     errors: errorReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },

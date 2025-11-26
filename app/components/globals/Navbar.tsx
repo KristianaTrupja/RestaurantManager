@@ -22,17 +22,17 @@ export function NavBar() {
         </button>
         {pathname === "/dashboard" && (
           <>
-          <div
-            className="relative cursor-pointer"
-            onClick={() => dispatch(openModal({ type: "cart" }))}
-          >
-            {/* Cart Icon */}
-            <ShoppingBag />
+            <div
+              className="relative cursor-pointer"
+              onClick={() => dispatch(openModal({ type: "cart" }))}
+            >
+              {/* Cart Icon */}
+              <ShoppingBag />
 
-            {/* Badge */}
-            {count > 0 && (
-              <span
-                className="
+              {/* Badge */}
+              {count > 0 && (
+                <span
+                  className="
           absolute -top-2 -right-2 
           bg-red-500 
           text-white 
@@ -43,12 +43,17 @@ export function NavBar() {
           flex items-center justify-center 
           shadow
         "
-              >
-                {count}
-              </span>
-            )}
-          </div>
-          <div className="cursor-pointer"><Dock /></div>
+                >
+                  {count}
+                </span>
+              )}
+            </div>
+            <div
+              className="cursor-pointer relative"
+              onClick={() => dispatch(openModal({ type: "bill" , tableId: "4"}))}
+            >
+              <Dock />
+            </div>
           </>
         )}
       </div>

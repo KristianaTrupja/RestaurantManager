@@ -1,6 +1,6 @@
 import { OrderItem } from "./OrderItem";
 
-export type TableStatus = "free" | "taken" | "served" | "waiting";
+export type TableStatus = "free" | "taken" | "served" | "waiting" | "finished";
 
 export interface Table {
   id: string;

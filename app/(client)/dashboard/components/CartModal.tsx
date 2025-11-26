@@ -5,14 +5,35 @@ import {
   decreaseQty,
   addToCart,
   removeFromCart,
+  clearCart,
 } from "@/app/store/slices/cartSlice";
 import { closeModal } from "@/app/store/slices/modalSlice";
+import { addOrderRound } from "@/app/store/slices/orderSlice";
 import { Button } from "@/components/ui/button";
 import { Delete } from "lucide-react";
 
 export default function CartModal() {
   const dispatch = useAppDispatch();
   const items = useAppSelector((state) => state.cart.items);
+const orderRound = useAppSelector((state) => state.orders.round);
+
+const handleOrder = () => {
+  if (items.length === 0) return;
+
+  // Convert cart items → order items
+  const orderItems = items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+    total: item.quantity * item.price,
+    round: orderRound,
+  }));
+
+  dispatch(addOrderRound(orderItems));
+  dispatch(clearCart());
+  dispatch(closeModal());
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -39,7 +60,7 @@ export default function CartModal() {
               >
                 {/* Image */}
                 <img
-                  src={item.image}
+                  src={item.image}         
                   alt={item.name}
                   className="w-14 h-14 object-cover rounded-lg"
                 />
@@ -111,7 +132,7 @@ export default function CartModal() {
           </div>
         )}
 
-        <Button variant="orange" className="mt-2">Order</Button>
+        <Button variant="orange" className="mt-2" onClick={handleOrder}>Order</Button>
       </div>
     </div>
   );

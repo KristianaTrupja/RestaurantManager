@@ -34,7 +34,7 @@ export default function Sidebar<T extends React.ReactNode>({
     frosted-glass 
     bg-[rgba(255,255,255,0.2)] 
     h-[90%] 
-    overflow-y-auto         // <-- ADD THIS
+    overflow-y-auto
     p-4 
     rounded-r-2xl 
     fixed 
