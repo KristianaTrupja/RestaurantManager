@@ -2,7 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
-import { markTableServed } from "@/app/store/slices/tableSlice";
+import { clearOrders, markTableFree, markTableServed } from "@/app/store/slices/tableSlice";
 import { generateBillPDF } from "@/app/utils/generateBillPDF";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -39,7 +39,6 @@ export default function TablePopup() {
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
       <div className="relative w-[90%] max-w-md p-6 pr-3 rounded-2xl shadow-xl bg-white/70 backdrop-blur-xl border border-white/40 animate-scaleIn">
-        
         {/* Close Icon */}
         <button
           onClick={() => dispatch(closeModal())}
@@ -74,11 +73,14 @@ export default function TablePopup() {
                       >
                         <span className="font-medium">
                           {order.name}{" "}
-                          <span className="text-gray-600">x{order.quantity}</span>
+                          <span className="text-gray-600">
+                            x{order.quantity}
+                          </span>
                         </span>
 
                         <span className="font-semibold">
-                          {(order.price * order.quantity).toFixed(2)}{currency}
+                          {(order.price * order.quantity).toFixed(2)}
+                          {currency}
                         </span>
                       </li>
                     ))}
@@ -96,22 +98,25 @@ export default function TablePopup() {
         {/* Totals */}
         <div className="px-6 text-right space-y-1">
           <div className="font-semibold text-sm">
-            Subtotal: {table.totalPriceWithoutTVSH.toFixed(2)}{currency}
+            Subtotal: {table.totalPriceWithoutTVSH.toFixed(2)}
+            {currency}
           </div>
 
           <div className="font-semibold text-sm">
-            TVSH: {table.tvsh.toFixed(2)}{currency}
+            TVSH: {table.tvsh.toFixed(2)}
+            {currency}
           </div>
 
           <div className="font-bold text-lg">
-            Total: {table.totalPriceWithTVSH.toFixed(2)}{currency}
+            Total: {table.totalPriceWithTVSH.toFixed(2)}
+            {currency}
           </div>
         </div>
 
         {/* Buttons */}
         {orders.length > 0 && (
           <div className="flex justify-between gap-3 mt-4">
-            {(table.status !== "served" && table.status != "finished") ? (
+            {table.status !== "served" && table.status != "finished" ? (
               <Button
                 onClick={() => {
                   dispatch(markTableServed(table.id));
@@ -129,7 +134,12 @@ export default function TablePopup() {
             )}
 
             <Button
-              onClick={() => generateBillPDF(table)}
+              onClick={() => {
+                generateBillPDF(table); // 1) Print PDF
+                dispatch(clearOrders(table.id)); // 2) Clear orders
+                dispatch(markTableFree(table.id)); // 3) Free the table
+                dispatch(closeModal()); // 4) Close modal
+              }}
               size="lg"
               variant="orange"
             >

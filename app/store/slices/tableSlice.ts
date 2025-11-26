@@ -21,7 +21,11 @@ const tableSlice = createSlice({
     },
     markTableFree: (state, action: PayloadAction<string>) => {
       const table = state.list.find((t) => t.id === action.payload);
-      if (table) table.status = "free";
+      if (table){
+         table.status = "free";
+         table.assignedWaiter = ""
+      };
+
     },
     markTableFinished: (state, action: PayloadAction<string>) => {
       const table = state.list.find((t) => t.id === action.payload);
