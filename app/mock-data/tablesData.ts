@@ -18,7 +18,7 @@ export const initialState: TableState = {
     {
       id: "2",
       number: 2,
-      status: "cleaning",
+      status: "free",
       assignedWaiter: "null",
       orders: [],
       totalPriceWithoutTVSH: 0,

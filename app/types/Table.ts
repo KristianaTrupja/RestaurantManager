@@ -1,18 +1,13 @@
-export type TableStatus = "free" | "taken" | "served" | "waiting" | "cleaning";
+import { OrderItem } from "./OrderItem";
+
+export type TableStatus = "free" | "taken" | "served" | "waiting";
 
 export interface Table {
   id: string;
   number: number;
   status: TableStatus;
   assignedWaiter: string;
-  orders: {
-    id: string;
-    name: string;
-    quantity: number;
-    price: number;
-    total: number;
-    round: number;
-  }[];
+  orders: OrderItem[];
   totalPriceWithoutTVSH: number;
   tvsh: number;
   totalPriceWithTVSH: number;

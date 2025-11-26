@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { selectCartCount } from "@/app/store/slices/cartSlice";
 import { openModal } from "@/app/store/slices/modalSlice";
-import { LogOut, ShoppingBag, UserRound } from "lucide-react";
+import { Dock, LogOut, ShoppingBag, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function NavBar() {
@@ -21,6 +21,7 @@ export function NavBar() {
           <LogOut width={20} />
         </button>
         {pathname === "/dashboard" && (
+          <>
           <div
             className="relative cursor-pointer"
             onClick={() => dispatch(openModal({ type: "cart" }))}
@@ -47,6 +48,8 @@ export function NavBar() {
               </span>
             )}
           </div>
+          <div className="cursor-pointer"><Dock /></div>
+          </>
         )}
       </div>
     </div>

@@ -19,8 +19,6 @@ export default function TableCard({ table }: { table: Table }) {
       ? "bg-blue-500"
       : table.status === "served"
       ? "bg-purple-500"
-      : table.status === "cleaning"
-      ? "bg-red-500"
       : "bg-gray-300";
 
   return (
@@ -43,7 +41,7 @@ export default function TableCard({ table }: { table: Table }) {
       <p className="text-sm opacity-70 capitalize mb-2">{table.status}</p>
 
       {/* Assigned Waiter */}
-      {table.assignedWaiter && (
+      {(table.assignedWaiter && table.status != "waiting")&& (
         <p className="text-xs opacity-70 italic mb-2">
           Waiter: {table.assignedWaiter}
         </p>
@@ -79,6 +77,19 @@ export default function TableCard({ table }: { table: Table }) {
           className="mt-2"
         >
           Assign to yourself
+        </Button>
+      )}
+      {table.status === "taken" && (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            dispatch(markTableWaiting(table.id));
+          }}
+          variant="outblue"
+          size="sm"
+          className="mt-2"
+        >
+          Unassign yourself
         </Button>
       )}
     </div>

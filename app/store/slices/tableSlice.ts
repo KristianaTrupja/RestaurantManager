@@ -19,6 +19,10 @@ const tableSlice = createSlice({
       const table = state.list.find((t) => t.id === action.payload);
       if (table) table.status = "served";
     },
+    markTableFree: (state, action: PayloadAction<string>) => {
+      const table = state.list.find((t) => t.id === action.payload);
+      if (table) table.status = "free";
+    },
     setTableData: (state, action: PayloadAction<Table>) => {
       const i = state.list.findIndex((t) => t.id === action.payload.id);
       if (i !== -1) state.list[i] = action.payload;
@@ -68,6 +72,7 @@ export const {
   markTableWaiting,
   markTableTaken,
   markTableServed,
+  markTableFree,
   setTableData,
   addOrder,
   clearOrders,

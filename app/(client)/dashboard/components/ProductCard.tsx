@@ -48,11 +48,11 @@ export default function ProductCard({ item }: any) {
         />
       </div>
 
-      <div className="p-4">
+      <div className="p-4 pb-12">
         <h3 className="font-semibold text-lg">{item.name}</h3>
         <p className="text-sm opacity-80">{item.description}</p>
         <p className="mt-2 font-bold">${item.price.toFixed(2)}</p>
-
+        <div className="absolute bottom-3">
         {/* Add to Cart button */}
         {isUnavailable ? (
           <Button
@@ -73,6 +73,7 @@ export default function ProductCard({ item }: any) {
             Add to Cart
           </Button>
         )}
+        </div>
       </div>
     </div>
   );

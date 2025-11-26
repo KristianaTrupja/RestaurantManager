@@ -29,7 +29,20 @@ export default function Sidebar<T extends React.ReactNode>({
     <>
       {/* Desktop: vertical sidebar */}
       <div
-        className={`hidden md:block frosted-glass bg-[rgba(255,255,255,0.2)] h-screen p-4 rounded-r-2xl fixed top-20 left-0 ${verticalClassName}`}
+        className={`
+    hidden md:block 
+    frosted-glass 
+    bg-[rgba(255,255,255,0.2)] 
+    h-[90%] 
+    overflow-y-auto         // <-- ADD THIS
+    p-4 
+    rounded-r-2xl 
+    fixed 
+    top-20 
+    left-0 
+    custom-scrollbar-dark
+    ${verticalClassName}
+  `}
       >
         <ul className="space-y-2">
           {items.map((item, index) => (

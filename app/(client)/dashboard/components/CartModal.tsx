@@ -7,6 +7,7 @@ import {
   removeFromCart,
 } from "@/app/store/slices/cartSlice";
 import { closeModal } from "@/app/store/slices/modalSlice";
+import { Button } from "@/components/ui/button";
 import { Delete } from "lucide-react";
 
 export default function CartModal() {
@@ -109,6 +110,8 @@ export default function CartModal() {
             </p>
           </div>
         )}
+
+        <Button variant="orange" className="mt-2">Order</Button>
       </div>
     </div>
   );

@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/app/store/hooks";
 import { updateMenuItem } from "@/app/store/slices/menuSlice";
+import { cn } from "@/lib/utils";
 
 export default function ProductCard({ item }: any) {
   const dispatch = useAppDispatch();
 
   const [editMode, setEditMode] = useState(false);
+  const [available, setAvailable] = useState(false);
 
   const [form, setForm] = useState({
     name: item.name,
@@ -30,8 +32,13 @@ export default function ProductCard({ item }: any) {
     setEditMode(false);
   };
 
+  const handleAvailability = () => {
+    setAvailable(!available);
+    dispatch(updateMenuItem({ ...item, available: !available }));
+  };
+
   return (
-    <div className="rounded-lg overflow-hidden shadow-lg text-white frosted-glass bg-[rgba(255,255,255,0.15)] backdrop-blur-md transition-transform duration-200 hover:scale-[1.02]">
+    <div className="relative rounded-lg overflow-hidden shadow-lg text-white frosted-glass bg-[rgba(255,255,255,0.15)] backdrop-blur-md transition-transform duration-200 hover:scale-[1.02]">
       {/* Image */}
       {editMode ? (
         <div className="relative">
@@ -61,7 +68,7 @@ export default function ProductCard({ item }: any) {
       )}
 
       {/* Content */}
-      <div className="p-4 space-y-3">
+      <div className={cn(editMode ? "pb-24":"p-4 pb-20 md:pb-12 space-t-3 ")}>
         {/* Name */}
         {editMode ? (
           <div>
@@ -108,40 +115,40 @@ export default function ProductCard({ item }: any) {
         ) : (
           <p className="mt-2 font-bold text-lg">${form.price.toFixed(2)}</p>
         )}
+        <div className="absolute bottom-3">
+          {/* Buttons */}
+          {editMode ? (
+            <div className="flex gap-2">
+              <Button variant="default" size="sm" onClick={handleSave}>
+                Save
+              </Button>
 
-        {/* Buttons */}
-        {editMode ? (
-          <div className="flex gap-2 pt-2">
-            <Button variant="default" size="sm" onClick={handleSave}>
-              Save
-            </Button>
-
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setEditMode(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          ) : (
             <Button
-              variant="destructive"
+              variant="outyellow"
               size="sm"
-              onClick={() => setEditMode(false)}
+              onClick={() => setEditMode(true)}
             >
-              Cancel
+              Edit
             </Button>
-          </div>
-        ) : (
+          )}
           <Button
-            variant="outyellow"
+            variant="outred"
             size="sm"
-            className="mt-4"
-            onClick={() => setEditMode(true)}
+            className="ml-2 mt-2"
+            onClick={handleAvailability}
           >
-            Edit
+            {available ? "Mark Unavailable" : "Mark Available"}
           </Button>
-        )}
-        <Button
-          variant="outred"
-          size="sm"
-          className="ml-2 mt-4"
-          onClick={() => setEditMode(true)}
-        >
-          Mark as unavailable
-        </Button>
+        </div>
       </div>
     </div>
   );
