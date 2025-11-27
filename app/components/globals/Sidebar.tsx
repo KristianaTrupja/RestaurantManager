@@ -49,7 +49,7 @@ export default function Sidebar<T extends React.ReactNode>({
             <li
               key={index}
               onClick={() => handleClick(item, index)}
-              className={`p-2 rounded cursor-pointer hover:bg-gray-100/20 ${
+              className={`p-2 rounded cursor-pointer hover:bg-gray-100/20 hover:text-white ${
                 selected === item
                   ? "bg-white text-black font-bold"
                   : "text-white"
