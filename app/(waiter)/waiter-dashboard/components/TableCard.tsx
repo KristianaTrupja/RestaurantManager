@@ -6,6 +6,7 @@ import {
 } from "@/app/store/slices/tableSlice";
 import { Table } from "@/app/types/Table";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function TableCard({ table }: { table: Table }) {
   const dispatch = useAppDispatch();
@@ -43,7 +44,7 @@ export default function TableCard({ table }: { table: Table }) {
       <p className="text-sm opacity-70 capitalize mb-2">{table.status}</p>
 
       {/* Assigned Waiter */}
-      {(table.assignedWaiter && table.status != "waiting")&& (
+      {table.assignedWaiter && table.status != "waiting" && (
         <p className="text-xs opacity-70 italic mb-2">
           Waiter: {table.assignedWaiter}
         </p>
@@ -59,6 +60,9 @@ export default function TableCard({ table }: { table: Table }) {
           onClick={(e) => {
             e.stopPropagation();
             dispatch(markTableWaiting(table.id));
+            toast.success("The table is now taken", {
+              description: "You can assign the table under your name.",
+            });
           }}
           variant="outgreen"
           size="sm"
@@ -73,6 +77,10 @@ export default function TableCard({ table }: { table: Table }) {
           onClick={(e) => {
             e.stopPropagation();
             dispatch(markTableTaken(table.id));
+            toast.success("The table is now assigned to you", {
+              description:
+                "Other waiters will now see that this table is already assigned to you.",
+            });
           }}
           variant="outyellow"
           size="sm"
@@ -86,6 +94,10 @@ export default function TableCard({ table }: { table: Table }) {
           onClick={(e) => {
             e.stopPropagation();
             dispatch(markTableWaiting(table.id));
+            toast.success("The table is not assigned to you now", {
+              description:
+                "This table can be picked by any waiter.",
+            });
           }}
           variant="outblue"
           size="sm"

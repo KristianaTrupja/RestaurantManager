@@ -4,6 +4,8 @@ import "./globals.css";
 import Providers from "./providers";
 import { NavBar } from "./components/globals/Navbar";
 import ModalRenderer from "./components/ModalRenderer";
+import { Toaster } from "@/components/ui/sonner";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <NavBar />
           {children}
+           <Toaster /> 
           <ModalRenderer />
         </Providers>
       </body>

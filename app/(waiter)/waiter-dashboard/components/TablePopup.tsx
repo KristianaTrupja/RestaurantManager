@@ -2,10 +2,15 @@
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
-import { clearOrders, markTableFree, markTableServed } from "@/app/store/slices/tableSlice";
+import {
+  clearOrders,
+  markTableFree,
+  markTableServed,
+} from "@/app/store/slices/tableSlice";
 import { generateBillPDF } from "@/app/utils/generateBillPDF";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 export default function TablePopup() {
   const dispatch = useAppDispatch();
@@ -121,6 +126,10 @@ export default function TablePopup() {
                 onClick={() => {
                   dispatch(markTableServed(table.id));
                   dispatch(closeModal());
+                  toast.success("The table is marked as served", {
+                    description:
+                      "Please stay updated for other orders which may come from this table.",
+                  });
                 }}
                 size="lg"
                 variant="purple"

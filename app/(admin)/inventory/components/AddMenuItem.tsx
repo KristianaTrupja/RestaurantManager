@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
+import { toast } from "sonner";
 
 export default function AddMenuItem() {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ export default function AddMenuItem() {
   const handleSubmit = () => {
     console.log("NEW MENU ITEM:", form);
     dispatch(closeModal());
+         toast.success("New menu item is added to the list");
   };
 
   return (

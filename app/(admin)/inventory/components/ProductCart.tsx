@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/app/store/hooks";
 import { updateMenuItem } from "@/app/store/slices/menuSlice";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function ProductCard({ item }: any) {
@@ -30,6 +31,7 @@ export default function ProductCard({ item }: any) {
   const handleSave = () => {
     dispatch(updateMenuItem({ ...item, ...form }));
     setEditMode(false);
+         toast.success("The new changes are saved sucessfully");
   };
 
   const handleAvailability = () => {

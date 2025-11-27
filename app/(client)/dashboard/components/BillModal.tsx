@@ -4,6 +4,7 @@ import { useAppSelector, useAppDispatch } from "@/app/store/hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
 import { markTableFinished } from "@/app/store/slices/tableSlice";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function BillModal() {
   const dispatch = useAppDispatch();
@@ -90,9 +91,15 @@ export default function BillModal() {
           <span>{table.totalPriceWithTVSH.toFixed(2)}€</span>
         </div>
         <Button
-          variant={"orange"}
+          variant="orange"
           className="mt-2"
-          onClick={() => dispatch(markTableFinished(tableId))}
+          onClick={() => {
+            dispatch(markTableFinished(tableId));
+            dispatch(closeModal());
+            toast.success("Request sent to waiter", {
+              description: "The waiter has been notified to bring the bill.",
+            });
+          }}
         >
           Print the bill
         </Button>

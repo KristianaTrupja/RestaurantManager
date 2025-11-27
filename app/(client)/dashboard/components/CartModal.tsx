@@ -11,34 +11,37 @@ import { closeModal } from "@/app/store/slices/modalSlice";
 import { addOrderRound } from "@/app/store/slices/orderSlice";
 import { Button } from "@/components/ui/button";
 import { Delete } from "lucide-react";
+import { toast } from "sonner";
 
 export default function CartModal() {
   const dispatch = useAppDispatch();
   const items = useAppSelector((state) => state.cart.items);
-const orderRound = useAppSelector((state) => state.orders.round);
+  const orderRound = useAppSelector((state) => state.orders.round);
 
-const handleOrder = () => {
-  if (items.length === 0) return;
+  const handleOrder = () => {
+    if (items.length === 0) return;
 
-  // Convert cart items → order items
-  const orderItems = items.map((item) => ({
-    id: item.id,
-    name: item.name,
-    quantity: item.quantity,
-    price: item.price,
-    total: item.quantity * item.price,
-    round: orderRound,
-  }));
+    // Convert cart items → order items
+    const orderItems = items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      total: item.quantity * item.price,
+      round: orderRound,
+    }));
+    toast.success("The order was sent sucessfully", {
+      description: "Your order will be served soon.",
+    });
 
-  dispatch(addOrderRound(orderItems));
-  dispatch(clearCart());
-  dispatch(closeModal());
-};
+    dispatch(addOrderRound(orderItems));
+    dispatch(clearCart());
+    dispatch(closeModal());
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white/70 text-gray-900 p-6 rounded-2xl shadow-2xl relative animate-scale-in">
-        
         {/* Close Button */}
         <button
           onClick={() => dispatch(closeModal())}
@@ -60,7 +63,7 @@ const handleOrder = () => {
               >
                 {/* Image */}
                 <img
-                  src={item.image}         
+                  src={item.image}
                   alt={item.name}
                   className="w-14 h-14 object-cover rounded-lg"
                 />
@@ -69,7 +72,7 @@ const handleOrder = () => {
                 <div className="flex-1">
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-gray-500">
-                    ${(item.price).toFixed(2)}
+                    ${item.price.toFixed(2)}
                   </p>
                 </div>
 
@@ -102,17 +105,19 @@ const handleOrder = () => {
                   </button>
                 </div>
 
-
                 {/* Price */}
                 <p className="font-semibold text-gray-800 min-w-[60px] text-right">
                   ${(item.quantity * item.price).toFixed(2)}
                 </p>
                 {/* Remove Button */}
                 <button
-                  onClick={() => dispatch(removeFromCart(item.id))}
+                  onClick={() => {
+                    dispatch(removeFromCart(item.id))
+                         toast.success("Item removed from cart");
+                  }}
                   className="ml-2 text-red-500 hover:text-red-600 text-sm"
                 >
-                  <Delete/>
+                  <Delete />
                 </button>
               </div>
             ))}
@@ -132,7 +137,9 @@ const handleOrder = () => {
           </div>
         )}
 
-        <Button variant="orange" className="mt-2" onClick={handleOrder}>Order</Button>
+        <Button variant="orange" className="mt-2" onClick={handleOrder}>
+          Order
+        </Button>
       </div>
     </div>
   );

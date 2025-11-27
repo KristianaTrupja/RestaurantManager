@@ -3,6 +3,7 @@
 import { useAppDispatch } from "@/app/store/hooks";
 import { addToCart } from "@/app/store/slices/cartSlice";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function ProductCard({ item }: any) {
   const dispatch = useAppDispatch();
@@ -18,6 +19,9 @@ export default function ProductCard({ item }: any) {
         quantity: 1,
       })
     );
+    toast.success("Product added to cart", {
+      description: "Check your cart to se the items you selected.",
+    });
   };
 
   const isUnavailable = !item.available;
@@ -27,7 +31,11 @@ export default function ProductCard({ item }: any) {
       className={`
         relative rounded-lg overflow-hidden shadow-sm text-white frosted-glass 
         bg-[rgba(255,255,255,0.1)] transition-transform duration-200 
-        ${isUnavailable ? "opacity-40 grayscale cursor-not-allowed" : "hover:scale-103"}
+        ${
+          isUnavailable
+            ? "opacity-40 grayscale cursor-not-allowed"
+            : "hover:scale-103"
+        }
       `}
     >
       {/* Unavailable badge */}
@@ -53,26 +61,26 @@ export default function ProductCard({ item }: any) {
         <p className="text-sm opacity-80">{item.description}</p>
         <p className="mt-2 font-bold">${item.price.toFixed(2)}</p>
         <div className="absolute bottom-3">
-        {/* Add to Cart button */}
-        {isUnavailable ? (
-          <Button
-            variant="secondary"
-            disabled
-            size="sm"
-            className="mt-4 opacity-50 cursor-not-allowed"
-          >
-            Not Available
-          </Button>
-        ) : (
-          <Button
-            variant="outyellow"
-            size="sm"
-            className="mt-4"
-            onClick={handleAdd}
-          >
-            Add to Cart
-          </Button>
-        )}
+          {/* Add to Cart button */}
+          {isUnavailable ? (
+            <Button
+              variant="secondary"
+              disabled
+              size="sm"
+              className="mt-4 opacity-50 cursor-not-allowed"
+            >
+              Not Available
+            </Button>
+          ) : (
+            <Button
+              variant="outyellow"
+              size="sm"
+              className="mt-4"
+              onClick={handleAdd}
+            >
+              Add to Cart
+            </Button>
+          )}
         </div>
       </div>
     </div>
