@@ -1,7 +1,7 @@
 "use client";
 
 import { RootState } from "@/app/store";
-import { useAppSelector } from "../../store/hooks";
+import { useAppSelector } from "@/app/store/hooks";
 import TableCard from "./components/TableCard";
 
 export default function WaiterDashboard() {

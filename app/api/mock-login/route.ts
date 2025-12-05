@@ -15,9 +15,28 @@ export async function POST(req: Request) {
     );
   }
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     id: user.id,
     fullName: user.fullName,
     role: user.role,
   });
+
+  // Set cookie with user role for middleware authorization
+  response.cookies.set("user_role", user.role, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24, // 1 day
+  });
+
+  response.cookies.set("user_id", String(user.id), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24, // 1 day
+  });
+
+  return response;
 }

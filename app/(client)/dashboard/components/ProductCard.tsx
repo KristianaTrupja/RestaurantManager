@@ -4,8 +4,21 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { addToCart } from "@/app/store/slices/cartSlice";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Plus, ShoppingBag } from "lucide-react";
 
-export default function ProductCard({ item }: any) {
+interface ProductCardProps {
+  item: {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    image: string;
+    available: boolean;
+  };
+  index?: number;
+}
+
+export default function ProductCard({ item, index = 0 }: ProductCardProps) {
   const dispatch = useAppDispatch();
 
   const handleAdd = () => {
@@ -19,8 +32,8 @@ export default function ProductCard({ item }: any) {
         quantity: 1,
       })
     );
-    toast.success("Product added to cart", {
-      description: "Check your cart to se the items you selected.",
+    toast.success("Added to cart!", {
+      description: `${item.name} has been added to your cart.`,
     });
   };
 
@@ -29,59 +42,88 @@ export default function ProductCard({ item }: any) {
   return (
     <div
       className={`
-        relative rounded-lg overflow-hidden shadow-sm text-white frosted-glass 
-        bg-[rgba(255,255,255,0.1)] transition-transform duration-200 
-        ${
-          isUnavailable
-            ? "opacity-40 grayscale cursor-not-allowed"
-            : "hover:scale-103"
+        group relative rounded-2xl overflow-hidden text-white
+        frosted-glass bg-[rgba(255,255,255,0.08)]
+        border border-white/10
+        transition-all duration-300 ease-out
+        ${isUnavailable 
+          ? "opacity-50 grayscale" 
+          : "hover:bg-[rgba(255,255,255,0.12)] hover:border-white/20 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1"
         }
       `}
+      style={{
+        animationDelay: `${index * 50}ms`,
+      }}
     >
-      {/* Unavailable badge */}
+      {/* Unavailable overlay */}
       {isUnavailable && (
-        <span className="absolute top-3 right-3 z-10 bg-red-600 text-xs font-bold px-2 py-1 rounded-md shadow-md">
-          Unavailable
-        </span>
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+          <span className="bg-red-500/90 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+            Currently Unavailable
+          </span>
+        </div>
       )}
 
-      {/* Image */}
-      <div className="relative">
+      {/* Image container */}
+      <div className="relative aspect-4/3 overflow-hidden">
         <img
           src={item.image}
           alt={item.name}
-          className={`w-full h-32 object-cover mb-4 rounded aspect-square ${
-            isUnavailable ? "blur-[1px]" : ""
-          }`}
+          className={`
+            w-full h-full object-cover
+            transition-transform duration-500
+            ${!isUnavailable && "group-hover:scale-110"}
+          `}
         />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
+        
+        {/* Price badge */}
+        <div className="absolute bottom-3 left-3">
+          <span className="bg-white/95 text-black font-bold text-sm px-3 py-1 rounded-full shadow-lg">
+            ${item.price.toFixed(2)}
+          </span>
+        </div>
+
+        {/* Quick add button (appears on hover) */}
+        {!isUnavailable && (
+          <button
+            onClick={handleAdd}
+            className="
+              absolute bottom-3 right-3
+              w-10 h-10 rounded-full
+              bg-purple-500 hover:bg-purple-400
+              flex items-center justify-center
+              shadow-lg shadow-purple-500/30
+              transition-all duration-300
+              opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0
+            "
+          >
+            <Plus className="w-5 h-5 text-white" />
+          </button>
+        )}
       </div>
 
-      <div className="p-4 pb-12">
-        <h3 className="font-semibold text-lg">{item.name}</h3>
-        <p className="text-sm opacity-80">{item.description}</p>
-        <p className="mt-2 font-bold">${item.price.toFixed(2)}</p>
-        <div className="absolute bottom-3">
-          {/* Add to Cart button */}
-          {isUnavailable ? (
-            <Button
-              variant="secondary"
-              disabled
-              size="sm"
-              className="mt-4 opacity-50 cursor-not-allowed"
-            >
-              Not Available
-            </Button>
-          ) : (
-            <Button
-              variant="outyellow"
-              size="sm"
-              className="mt-4"
-              onClick={handleAdd}
-            >
-              Add to Cart
-            </Button>
-          )}
-        </div>
+      {/* Content */}
+      <div className="p-4">
+        <h3 className="font-semibold text-base sm:text-lg text-white mb-1 line-clamp-1">
+          {item.name}
+        </h3>
+        <p className="text-sm text-zinc-400 line-clamp-2 mb-4 min-h-10">
+          {item.description}
+        </p>
+
+        {/* Add to Cart button */}
+        <Button
+          variant={isUnavailable ? "disabled" : "purple"}
+          size="sm"
+          className="w-full"
+          onClick={handleAdd}
+          disabled={isUnavailable}
+        >
+          <ShoppingBag className="w-4 h-4 mr-2" />
+          {isUnavailable ? "Unavailable" : "Add to Cart"}
+        </Button>
       </div>
     </div>
   );
