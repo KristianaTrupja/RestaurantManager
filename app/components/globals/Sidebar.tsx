@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SidebarProps<T extends React.ReactNode> {
   items: T[];
@@ -21,6 +22,38 @@ export default function Sidebar<T extends React.ReactNode>({
 }: SidebarProps<T>) {
   const horizontalRef = useRef<HTMLUListElement>(null);
   const selectedRef = useRef<HTMLLIElement>(null);
+  
+  // Scroll indicators state
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  // Check scroll position and update indicators
+  const updateScrollIndicators = useCallback(() => {
+    if (horizontalRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = horizontalRef.current;
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  }, []);
+
+  // Update indicators on scroll, resize, and mount
+  useEffect(() => {
+    const container = horizontalRef.current;
+    if (!container) return;
+
+    updateScrollIndicators();
+    container.addEventListener("scroll", updateScrollIndicators);
+    window.addEventListener("resize", updateScrollIndicators);
+
+    // Initial check after render
+    const timer = setTimeout(updateScrollIndicators, 100);
+
+    return () => {
+      container.removeEventListener("scroll", updateScrollIndicators);
+      window.removeEventListener("resize", updateScrollIndicators);
+      clearTimeout(timer);
+    };
+  }, [updateScrollIndicators, items]);
 
   // Auto-scroll to selected item on mobile
   useEffect(() => {
@@ -37,6 +70,17 @@ export default function Sidebar<T extends React.ReactNode>({
       });
     }
   }, [selected]);
+
+  // Scroll by amount on arrow click
+  const scroll = (direction: "left" | "right") => {
+    if (horizontalRef.current) {
+      const scrollAmount = 150;
+      horizontalRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
     <>
@@ -83,7 +127,7 @@ export default function Sidebar<T extends React.ReactNode>({
         </ul>
       </aside>
 
-      {/* Mobile: horizontal scrollable tabs */}
+      {/* Mobile: horizontal scrollable tabs with arrow indicators */}
       <div
         className={`
           md:hidden 
@@ -94,36 +138,99 @@ export default function Sidebar<T extends React.ReactNode>({
           ${horizontalClassName}
         `}
       >
-        <ul
-          ref={horizontalRef}
-          className="flex gap-2 px-4 py-3 overflow-x-auto scrollbar-hide"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {items.map((item, index) => (
-            <li
-              key={index}
-              ref={selected === item ? selectedRef : null}
-              onClick={() => onSelect(item)}
-              className={`
-                flex-shrink-0 
-                cursor-pointer 
-                whitespace-nowrap 
-                px-4 py-2 
+        <div className="relative">
+          {/* Left fade gradient + arrow */}
+          <div
+            className={`
+              absolute left-0 top-0 bottom-0 z-10
+              flex items-center
+              transition-opacity duration-300
+              ${canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"}
+            `}
+          >
+            <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[rgba(30,30,30,0.9)] to-transparent pointer-events-none" />
+            <button
+              onClick={() => scroll("left")}
+              className="
+                relative ml-1
+                w-8 h-8 
                 rounded-full 
-                text-sm 
-                font-medium 
+                bg-white/20 hover:bg-white/30
+                backdrop-blur-md
+                flex items-center justify-center
+                text-white
                 transition-all duration-200
-                ${
-                  selected === item
-                    ? "bg-white text-black font-semibold shadow-md"
-                    : "text-white/90 bg-white/5 hover:bg-white/15"
-                }
-              `}
+                active:scale-90
+                shadow-lg
+              "
+              aria-label="Scroll left"
             >
-              {renderItem ? renderItem(item, selected === item) : item}
-            </li>
-          ))}
-        </ul>
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Scrollable list */}
+          <ul
+            ref={horizontalRef}
+            className="flex gap-2 px-4 py-3 overflow-x-auto scrollbar-hide"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {items.map((item, index) => (
+              <li
+                key={index}
+                ref={selected === item ? selectedRef : null}
+                onClick={() => onSelect(item)}
+                className={`
+                  flex-shrink-0 
+                  cursor-pointer 
+                  whitespace-nowrap 
+                  px-4 py-2 
+                  rounded-full 
+                  text-sm 
+                  font-medium 
+                  transition-all duration-200
+                  ${
+                    selected === item
+                      ? "bg-white text-black font-semibold shadow-md"
+                      : "text-white/90 bg-white/5 hover:bg-white/15"
+                  }
+                `}
+              >
+                {renderItem ? renderItem(item, selected === item) : item}
+              </li>
+            ))}
+          </ul>
+
+          {/* Right fade gradient + arrow */}
+          <div
+            className={`
+              absolute right-0 top-0 bottom-0 z-10
+              flex items-center
+              transition-opacity duration-300
+              ${canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"}
+            `}
+          >
+            <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[rgba(30,30,30,0.9)] to-transparent pointer-events-none" />
+            <button
+              onClick={() => scroll("right")}
+              className="
+                relative mr-1
+                w-8 h-8 
+                rounded-full 
+                bg-white/20 hover:bg-white/30
+                backdrop-blur-md
+                flex items-center justify-center
+                text-white
+                transition-all duration-200
+                active:scale-90
+                shadow-lg
+              "
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );

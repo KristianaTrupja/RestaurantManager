@@ -61,3 +61,4 @@ export default function MenuGrid({ category }: { category: string }) {
     </div>
   );
 }
+

@@ -44,7 +44,7 @@ export default function LoginPage() {
           break;
 
         case "ADMIN":
-          router.push("/inventory");
+          router.push("/admin-dashboard");
           break;
 
         default:
@@ -130,15 +130,6 @@ export default function LoginPage() {
             )}
           </Button>
 
-          {/* Register link */}
-          <div className="mt-6 pt-6 border-t border-white/10 text-center">
-            <p className="text-zinc-400 text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="/register" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
-                Create one
-              </a>
-            </p>
-          </div>
         </form>
       </div>
     </div>

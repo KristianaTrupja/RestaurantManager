@@ -81,68 +81,76 @@ export default function CartModal() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="group flex items-center gap-3 bg-white/5 hover:bg-white/8 p-3 rounded-xl transition-colors"
+                  className="group bg-white/5 hover:bg-white/8 p-3 rounded-xl transition-colors"
                 >
-                  {/* Image */}
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded-xl"
-                  />
+                  {/* Top row: Image, Name, Remove button */}
+                  <div className="flex items-start gap-3 mb-3">
+                    {/* Image */}
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-xl shrink-0"
+                    />
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-white truncate">{item.name}</p>
-                    <p className="text-sm text-zinc-400">
-                      ${item.price.toFixed(2)} each
-                    </p>
-                  </div>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0 pt-0.5">
+                      <p className="font-medium text-white text-sm sm:text-base leading-tight mb-1">
+                        {item.name}
+                      </p>
+                      <p className="text-sm text-zinc-400">
+                        ${item.price.toFixed(2)} each
+                      </p>
+                    </div>
 
-                  {/* Quantity Controls */}
-                  <div className="flex items-center gap-1 bg-white/5 rounded-full p-1">
-                    <button
-                      onClick={() => dispatch(decreaseQty(item.id))}
-                      className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-
-                    <span className="w-8 text-center font-semibold text-white text-sm">
-                      {item.quantity}
-                    </span>
-
-                    <button
-                      onClick={() =>
-                        dispatch(
-                          addToCart({
-                            id: item.id,
-                            name: item.name,
-                            price: item.price,
-                            image: item.image,
-                            quantity: 1,
-                          })
-                        )
-                      }
-                      className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  {/* Price & Remove */}
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold text-white min-w-16 text-right">
-                      ${(item.quantity * item.price).toFixed(2)}
-                    </p>
+                    {/* Remove button - always visible on mobile */}
                     <button
                       onClick={() => {
                         dispatch(removeFromCart(item.id));
                         toast.success("Item removed from cart");
                       }}
-                      className="w-8 h-8 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all"
+                      className="w-8 h-8 shrink-0 flex items-center justify-center rounded-full sm:opacity-0 sm:group-hover:opacity-100 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
+                  </div>
+
+                  {/* Bottom row: Quantity controls and Price */}
+                  <div className="flex items-center justify-between">
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-1 bg-white/5 rounded-full p-1">
+                      <button
+                        onClick={() => dispatch(decreaseQty(item.id))}
+                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+
+                      <span className="w-10 text-center font-semibold text-white">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        onClick={() =>
+                          dispatch(
+                            addToCart({
+                              id: item.id,
+                              name: item.name,
+                              price: item.price,
+                              image: item.image,
+                              quantity: 1,
+                            })
+                          )
+                        }
+                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Total Price */}
+                    <p className="font-bold text-white text-lg">
+                      ${(item.quantity * item.price).toFixed(2)}
+                    </p>
                   </div>
                 </div>
               ))}

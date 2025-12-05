@@ -236,3 +236,4 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
     </div>
   );
 }
+

@@ -5,7 +5,7 @@ import MenuGrid from "./components/MenuGrid";
 import Sidebar from "@/app/components/globals/Sidebar";
 import { categories } from "@/app/mock-data/mockMenu";
 
-export default function Inventory() {
+export default function AdminDashboard() {
   const [selectedCategory, setSelectedCategory] = useState("Starters");
 
   return (
@@ -48,3 +48,4 @@ export default function Inventory() {
     </>
   );
 }
+

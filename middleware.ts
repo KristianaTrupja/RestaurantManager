@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 const roleRoutes: Record<string, string[]> = {
   GUEST: ["/dashboard", "/choose-table"],
   WAITER: ["/waiter-dashboard"],
-  ADMIN: ["/inventory"],
+  ADMIN: ["/admin-dashboard"],
 };
 
 export function middleware(req: NextRequest) {
@@ -13,7 +13,7 @@ export function middleware(req: NextRequest) {
   const userRole = req.cookies.get("user_role")?.value;
 
   // Allow access to public pages and API routes
-  if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/api")) {
+  if (pathname === "/login" || pathname.startsWith("/api")) {
     return NextResponse.next();
   }
 
@@ -38,6 +38,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/waiter-dashboard/:path*", "/inventory/:path*", "/choose-table/:path*"],
+  matcher: ["/dashboard/:path*", "/waiter-dashboard/:path*", "/admin-dashboard/:path*", "/choose-table/:path*"],
 };
 

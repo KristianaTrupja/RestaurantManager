@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type ModalType = "table" | "cart" | "createMenuItem" | "bill" | null;
+type ModalType = "table" | "cart" | "createMenuItem" | "bill" | "createUser" | null;
 
 interface ModalState {
   isOpen: boolean;

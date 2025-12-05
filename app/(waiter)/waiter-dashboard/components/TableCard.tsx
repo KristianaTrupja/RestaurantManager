@@ -171,10 +171,11 @@ export default function TableCard({ table }: { table: Table }) {
             <Button
               onClick={(e) => {
                 e.stopPropagation();
+                dispatch(openModal({ type: "table", tableId: table.id }));
               }}
               variant="purple"
               size="sm"
-              className="w-full opacity-80"
+              className="w-full"
             >
               <Receipt className="w-4 h-4 mr-1" />
               View Details

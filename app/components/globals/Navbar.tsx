@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { selectCartCount } from "@/app/store/slices/cartSlice";
 import { openModal } from "@/app/store/slices/modalSlice";
-import { LogOut, ShoppingBag, Receipt, UtensilsCrossed, User, Shield, ChefHat } from "lucide-react";
+import { LogOut, ShoppingBag, Receipt, UtensilsCrossed, User, Shield, ChefHat, UserPlus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 export function NavBar() {
@@ -96,6 +96,19 @@ export function NavBar() {
                     className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
                   >
                     <Receipt className="w-5 h-5 text-zinc-400 group-hover:text-white transition-colors" />
+                  </button>
+                </div>
+              )}
+
+              {/* Admin Actions */}
+              {user.role === "ADMIN" && pathname === "/admin-dashboard" && (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => dispatch(openModal({ type: "createUser" }))}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 transition-colors group"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    <span className="hidden sm:inline text-sm font-medium">Create User</span>
                   </button>
                 </div>
               )}
