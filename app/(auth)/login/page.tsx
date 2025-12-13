@@ -104,31 +104,19 @@ export default function LoginPage() {
 
       console.log(`[TableGuest] Found table:`, table);
 
-      // Check if table already has an active session
-      const sessionCheckResult = await fetch(`${apiUrl}/tables/${table.id}/session`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (sessionCheckResult.ok) {
-        const sessionCheckData = await sessionCheckResult.json();
-        console.log("[TableGuest] Existing session check:", sessionCheckData);
-        
-        // If there's an existing session, use it
-        if (sessionCheckData.success && sessionCheckData.data && sessionCheckData.data.id) {
-          toast.success(`Welcome back to Table ${tableNumber}!`);
-          router.push(`/dashboard?tableId=${table.id}&sessionId=${sessionCheckData.data.id}&tableNumber=${tableNumber}`);
-          return;
-        }
+      // Check if table already has an active session (using currentSessionId from table data)
+      if (table.currentSessionId) {
+        console.log(`[TableGuest] Table has existing session: ${table.currentSessionId}`);
+        toast.success(`Welcome back to Table ${tableNumber}!`);
+        router.push(`/dashboard?tableId=${table.id}&sessionId=${table.currentSessionId}&tableNumber=${tableNumber}`);
+        return;
       }
 
       // No existing session - check if table is free
       const status = table.status?.toLowerCase();
       if (status !== "free" && status !== "available") {
-        console.log(`[TableGuest] Table ${tableNumber} is ${status}`);
-        toast.error(`Table ${tableNumber} is currently in use by another guest`);
+        console.log(`[TableGuest] Table ${tableNumber} is ${status} but has no session`);
+        toast.error(`Table ${tableNumber} is currently unavailable`);
         return;
       }
 
