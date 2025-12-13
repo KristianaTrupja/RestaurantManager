@@ -69,15 +69,8 @@ export interface MenuItem {
   price: number;
   image: string;
   available: boolean;
-  preparationTime?: number; // in minutes
-  allergens?: string[];
-  isVegetarian?: boolean;
-  isVegan?: boolean;
-  isGlutenFree?: boolean;
-  calories?: number;
-  sortOrder: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CreateMenuItemRequest {
@@ -87,8 +80,6 @@ export interface CreateMenuItemRequest {
   price: number;
   image?: string;
   available?: boolean;
-  preparationTime?: number;
-  allergens?: string[];
 }
 
 export interface UpdateMenuItemRequest extends Partial<CreateMenuItemRequest> {
@@ -99,20 +90,24 @@ export interface UpdateMenuItemRequest extends Partial<CreateMenuItemRequest> {
 // TABLES
 // ============================================
 
-export type TableStatus = "free" | "waiting" | "taken" | "served" | "finished";
+// Backend uses uppercase, but we normalize to lowercase in the UI
+export type TableStatus = 
+  | "free" | "waiting" | "taken" | "served" | "requesting_bill" | "finished"
+  | "FREE" | "WAITING" | "TAKEN" | "SERVED" | "REQUESTING_BILL" | "FINISHED";
 
 export interface Table {
   id: string;
-  number: number;
-  capacity: number;
+  number?: number;
+  tableNumber?: number; // Backend might use this instead of 'number'
+  capacity?: number;
   status: TableStatus;
   assignedWaiterId?: number;
   assignedWaiter?: string; // Waiter name for display
   currentSessionId?: string;
   location?: string; // e.g., "indoor", "outdoor", "terrace"
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface TableSession {
@@ -123,17 +118,15 @@ export interface TableSession {
   status: TableStatus;
   startedAt: string;
   endedAt?: string;
-  orders: Order[];
+  orders?: Order[];
   totalPriceWithoutTax: number;
   taxAmount: number;
   taxRate: number; // e.g., 0.20 for 20%
   totalPriceWithTax: number;
   currency: string;
   billNumber?: string;
-  printedAt?: string;
   paidAt?: string;
   paymentMethod?: "cash" | "card" | "other";
-  notes?: string;
 }
 
 // ============================================

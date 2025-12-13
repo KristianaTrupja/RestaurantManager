@@ -1,44 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
+import { useCreateMenuItemMutation } from "@/app/lib/api/menuItemApi";
+import { useGetCategoriesQuery } from "@/app/lib/api/categoryApi";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Plus, X, Tag, FileText, DollarSign, Image, Eye } from "lucide-react";
+import { Plus, X, Tag, FileText, DollarSign, Image, Eye, Loader2 } from "lucide-react";
 
 export default function AddMenuItem() {
   const dispatch = useAppDispatch();
   const modal = useAppSelector((state) => state.modal);
-
   const preselectedCategory = modal.category ?? "";
+
+  const { data: categoriesResponse } = useGetCategoriesQuery();
+  const [createMenuItem, { isLoading }] = useCreateMenuItemMutation();
+
+  const categories = categoriesResponse?.data || [];
+  const selectedCategoryData = categories.find(c => c.name === preselectedCategory);
 
   const [form, setForm] = useState({
     name: "",
     description: "",
     price: "",
     image: "",
-    category: preselectedCategory,
+    categoryId: selectedCategoryData?.id || 0,
     available: true,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Update categoryId when categories load
+  useEffect(() => {
+    if (selectedCategoryData && form.categoryId === 0) {
+      setForm(prev => ({ ...prev, categoryId: selectedCategoryData.id }));
+    }
+  }, [selectedCategoryData, form.categoryId]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : name === "categoryId" ? Number(value) : value,
     }));
   };
 
-  const handleSubmit = () => {
-    if (!form.name || !form.price) {
+  const handleSubmit = async () => {
+    if (!form.name || !form.price || !form.categoryId) {
       toast.error("Please fill in required fields");
       return;
     }
-    console.log("NEW MENU ITEM:", form);
-    dispatch(closeModal());
-    toast.success("Menu item added successfully!");
+
+    try {
+      const result = await createMenuItem({
+        categoryId: form.categoryId,
+        name: form.name,
+        description: form.description,
+        price: Number(form.price),
+        image: form.image || undefined,
+        available: form.available,
+      }).unwrap();
+
+      if (result.success) {
+        dispatch(closeModal());
+        toast.success("Menu item added successfully!");
+      } else {
+        toast.error(result.message || "Failed to add menu item");
+      }
+    } catch (error: unknown) {
+      const err = error as { data?: { message?: string } };
+      toast.error(err.data?.message || "Failed to add menu item");
+    }
   };
 
   return (
@@ -69,14 +101,21 @@ export default function AddMenuItem() {
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-medium text-zinc-400">
               <Tag className="w-4 h-4" />
-              Category
+              Category *
             </label>
-            <input
-              name="category"
-              value={form.category}
+            <select
+              name="categoryId"
+              value={form.categoryId}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-400 transition"
-            />
+              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-purple-400 transition"
+            >
+              <option value={0} disabled>Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id} className="bg-zinc-900">
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Name */}
@@ -87,6 +126,7 @@ export default function AddMenuItem() {
             </label>
             <input
               name="name"
+              value={form.name}
               placeholder="e.g. Margherita Pizza"
               onChange={handleChange}
               className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-400 transition"
@@ -101,6 +141,7 @@ export default function AddMenuItem() {
             </label>
             <textarea
               name="description"
+              value={form.description}
               placeholder="Short description of the item..."
               rows={3}
               onChange={handleChange}
@@ -118,6 +159,7 @@ export default function AddMenuItem() {
               name="price"
               type="number"
               step="0.01"
+              value={form.price}
               placeholder="0.00"
               onChange={handleChange}
               className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-400 transition"
@@ -132,6 +174,7 @@ export default function AddMenuItem() {
             </label>
             <input
               name="image"
+              value={form.image}
               placeholder="https://example.com/image.jpg"
               onChange={handleChange}
               className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-400 transition"
@@ -174,13 +217,22 @@ export default function AddMenuItem() {
             size="lg"
             className="w-full"
             onClick={handleSubmit}
+            disabled={isLoading}
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Menu Item
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Adding...
+              </span>
+            ) : (
+              <>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Menu Item
+              </>
+            )}
           </Button>
         </div>
       </div>
     </div>
   );
 }
-

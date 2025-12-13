@@ -6,6 +6,7 @@ import CartModal from "@/app/(client)/dashboard/components/CartModal";
 import AddMenuItem from "../(admin)/admin-dashboard/components/AddMenuItem";
 import BillModal from "../(client)/dashboard/components/BillModal";
 import CreateUserModal from "../(admin)/admin-dashboard/components/CreateUserModal";
+import AddCategoryModal from "../(admin)/admin-dashboard/components/AddCategoryModal";
 
 export default function ModalRenderer() {
   const { isOpen, type } = useAppSelector((state) => state.modal);
@@ -17,6 +18,7 @@ export default function ModalRenderer() {
   if (type === "createMenuItem") return <AddMenuItem />;
   if (type === "bill") return <BillModal />;
   if (type === "createUser") return <CreateUserModal />;
+  if (type === "createCategory") return <AddCategoryModal />;
 
   return null;
 }

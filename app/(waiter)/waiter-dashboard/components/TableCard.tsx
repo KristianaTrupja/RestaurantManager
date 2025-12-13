@@ -1,16 +1,31 @@
-import { useAppDispatch } from "@/app/store/hooks";
+"use client";
+
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { openModal } from "@/app/store/slices/modalSlice";
-import {
-  markTableTaken,
-  markTableWaiting,
-} from "@/app/store/slices/tableSlice";
+import { useAssignWaiterMutation } from "@/app/lib/api/tableApi";
 import { Table } from "@/app/types/Table";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Users, UserCheck, Clock, CheckCircle, Receipt } from "lucide-react";
+import { Users, UserCheck, Clock, CheckCircle, Receipt, Loader2, AlertCircle } from "lucide-react";
 
-export default function TableCard({ table }: { table: Table }) {
+interface TableCardProps {
+  table: Table;
+}
+
+// Helper to get table number (backend might return 'number' or 'tableNumber')
+const getTableNumber = (table: Table): number | string => {
+  return table.tableNumber ?? table.number ?? "?";
+};
+
+export default function TableCard({ table }: TableCardProps) {
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+  
+  const [assignWaiter, { isLoading }] = useAssignWaiterMutation();
+
+  // Normalize status to lowercase for comparison
+  const status = (table.status?.toLowerCase() || "free") as 
+    "free" | "waiting" | "taken" | "served" | "requesting_bill" | "finished";
 
   const statusConfig = {
     free: {
@@ -35,7 +50,7 @@ export default function TableCard({ table }: { table: Table }) {
       textColor: "text-blue-400",
       bgColor: "bg-blue-500",
       icon: UserCheck,
-      label: "Taken",
+      label: "Occupied",
     },
     served: {
       color: "from-purple-500/20 to-purple-600/10",
@@ -45,18 +60,57 @@ export default function TableCard({ table }: { table: Table }) {
       icon: CheckCircle,
       label: "Served",
     },
-    finished: {
-      color: "from-red-500/20 to-red-600/10",
-      borderColor: "border-red-500/30",
-      textColor: "text-red-400",
-      bgColor: "bg-red-500",
+    requesting_bill: {
+      color: "from-orange-500/20 to-orange-600/10",
+      borderColor: "border-orange-500/30",
+      textColor: "text-orange-400",
+      bgColor: "bg-orange-500",
       icon: Receipt,
       label: "Bill Requested",
     },
+    finished: {
+      color: "from-gray-500/20 to-gray-600/10",
+      borderColor: "border-gray-500/30",
+      textColor: "text-gray-400",
+      bgColor: "bg-gray-500",
+      icon: CheckCircle,
+      label: "Finished",
+    },
   };
 
-  const config = statusConfig[table.status as keyof typeof statusConfig] || statusConfig.free;
+  const config = statusConfig[status] || statusConfig.free;
   const StatusIcon = config.icon;
+
+  // Check if this table is assigned to current waiter
+  const isAssignedToMe = table.assignedWaiterId === user?.id;
+
+  const handleAssignToMe = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      // Just assign waiter, status is already "taken" from guest selecting table
+      await assignWaiter({ id: table.id, waiterId: user?.id }).unwrap();
+      toast.success("Table assigned to you", {
+        description: "You are now serving this table.",
+      });
+    } catch (error) {
+      console.error("Assign error:", error);
+      toast.error("Failed to assign table");
+    }
+  };
+
+  const handleUnassign = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      // Just unassign waiter, keep status as taken (guests are still there)
+      await assignWaiter({ id: table.id, waiterId: undefined }).unwrap();
+      toast.success("Table unassigned", {
+        description: "Another waiter can now pick up this table.",
+      });
+    } catch (error) {
+      console.error("Unassign error:", error);
+      toast.error("Failed to unassign table");
+    }
+  };
 
   return (
     <div
@@ -67,11 +121,26 @@ export default function TableCard({ table }: { table: Table }) {
         border ${config.borderColor}
         transition-all duration-300
         hover:scale-[1.02] hover:shadow-xl hover:shadow-black/20
+        ${isLoading ? "opacity-75 pointer-events-none" : ""}
       `}
       onClick={() => dispatch(openModal({ type: "table", tableId: table.id }))}
     >
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
+          <Loader2 className="w-6 h-6 text-white animate-spin" />
+        </div>
+      )}
+
+      {/* Urgent indicator for finished tables */}
+      {status === "finished" && (
+        <div className="absolute top-2 right-2 z-10">
+          <AlertCircle className="w-5 h-5 text-orange-400 animate-pulse" />
+        </div>
+      )}
+
       {/* Gradient Background */}
-      <div className={`absolute inset-0 bg-linear-to-br ${config.color} opacity-50`} />
+      <div className={`absolute inset-0 bg-gradient-to-br ${config.color} opacity-50`} />
 
       {/* Content */}
       <div className="relative p-4 sm:p-5 flex flex-col items-center text-center">
@@ -82,7 +151,7 @@ export default function TableCard({ table }: { table: Table }) {
 
         {/* Table Number */}
         <h3 className="text-2xl sm:text-3xl font-bold text-white mb-1">
-          {table.number}
+          {getTableNumber(table)}
         </h3>
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">Table</p>
 
@@ -91,94 +160,106 @@ export default function TableCard({ table }: { table: Table }) {
           {config.label}
         </div>
 
+        {/* Capacity */}
+        {table.capacity && (
+          <div className="mt-2 flex items-center gap-1 text-xs text-zinc-400">
+            <Users className="w-3 h-3" />
+            <span>{table.capacity} seats</span>
+          </div>
+        )}
+
         {/* Assigned Waiter */}
-        {table.assignedWaiter && table.status !== "waiting" && table.status !== "free" && (
-          <p className="mt-3 text-xs text-zinc-400 flex items-center gap-1">
+        {table.assignedWaiter && status !== "waiting" && status !== "free" && (
+          <p className={`mt-2 text-xs flex items-center gap-1 ${isAssignedToMe ? "text-green-400" : "text-zinc-400"}`}>
             <UserCheck className="w-3 h-3" />
-            {table.assignedWaiter}
+            {isAssignedToMe ? "You" : table.assignedWaiter}
           </p>
         )}
 
-        {/* Order Count */}
-        {table.orders && table.orders.length > 0 && (
-          <div className="mt-3 flex items-center gap-2 text-xs text-zinc-400">
-            <span className="px-2 py-0.5 rounded-full bg-white/10">
-              {table.orders.length} {table.orders.length === 1 ? "order" : "orders"}
-            </span>
-            <span className="font-medium text-green-400">
-              €{table.totalPriceWithTVSH?.toFixed(2) || "0.00"}
-            </span>
-          </div>
+        {/* Location */}
+        {table.location && (
+          <p className="mt-1 text-xs text-zinc-500 capitalize">
+            {table.location}
+          </p>
         )}
 
         {/* Action Buttons */}
         <div className="mt-4 w-full">
-          {table.status === "free" && (
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(markTableWaiting(table.id));
-                toast.success("Table marked as waiting", {
-                  description: "You can now assign this table to yourself.",
-                });
-              }}
-              variant="outgreen"
-              size="sm"
-              className="w-full"
-            >
-              <Clock className="w-4 h-4 mr-1" />
-              Mark Waiting
-            </Button>
+          {/* Free tables - no action needed, waiting for guests */}
+          {status === "free" && (
+            <div className="text-xs text-zinc-500 text-center py-2">
+              Waiting for guests
+            </div>
           )}
 
-          {table.status === "waiting" && (
+          {/* Waiting tables (legacy) - can assign to self */}
+          {status === "waiting" && (
             <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(markTableTaken(table.id));
-                toast.success("Table assigned to you", {
-                  description: "Other waiters will see this table is taken.",
-                });
-              }}
+              onClick={handleAssignToMe}
               variant="outyellow"
               size="sm"
               className="w-full"
+              disabled={isLoading}
             >
               <UserCheck className="w-4 h-4 mr-1" />
               Assign to Me
             </Button>
           )}
 
-          {table.status === "taken" && (
+          {/* Taken tables without waiter - can assign to self */}
+          {status === "taken" && !table.assignedWaiterId && (
             <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(markTableWaiting(table.id));
-                toast.success("Table unassigned", {
-                  description: "Any waiter can now pick up this table.",
-                });
-              }}
+              onClick={handleAssignToMe}
+              variant="outyellow"
+              size="sm"
+              className="w-full"
+              disabled={isLoading}
+            >
+              <UserCheck className="w-4 h-4 mr-1" />
+              Assign to Me
+            </Button>
+          )}
+
+          {/* Taken tables assigned to me - can unassign */}
+          {status === "taken" && isAssignedToMe && (
+            <Button
+              onClick={handleUnassign}
               variant="outblue"
               size="sm"
               className="w-full"
+              disabled={isLoading}
             >
               <Users className="w-4 h-4 mr-1" />
               Unassign
             </Button>
           )}
 
-          {(table.status === "served" || table.status === "finished") && (
+          {/* Taken tables assigned to someone else */}
+          {status === "taken" && table.assignedWaiterId && !isAssignedToMe && (
+            <Button
+              variant="disabled"
+              size="sm"
+              className="w-full"
+              disabled
+            >
+              <UserCheck className="w-4 h-4 mr-1" />
+              Assigned
+            </Button>
+          )}
+
+          {/* Served or finished tables */}
+          {(status === "served" || status === "finished") && (
             <Button
               onClick={(e) => {
                 e.stopPropagation();
                 dispatch(openModal({ type: "table", tableId: table.id }));
               }}
-              variant="purple"
+              variant={status === "finished" ? "orange" : "purple"}
               size="sm"
               className="w-full"
             >
               <Receipt className="w-4 h-4 mr-1" />
-              View Details
+              {status === "finished" ? "Process Bill" : "View Details"}
             </Button>
           )}
         </div>

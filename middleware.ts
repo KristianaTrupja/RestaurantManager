@@ -8,17 +8,32 @@ const roleRoutes: Record<string, string[]> = {
   ADMIN: ["/admin-dashboard"],
 };
 
+// Public routes that don't require authentication
+const publicRoutes = ["/login", "/", "/api"];
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  
+  // Check for auth token in cookie
+  const authToken = req.cookies.get("auth_token")?.value;
   const userRole = req.cookies.get("user_role")?.value;
 
   // Allow access to public pages and API routes
-  if (pathname === "/login" || pathname.startsWith("/api")) {
+  const isPublicRoute = publicRoutes.some(route => 
+    pathname === route || pathname.startsWith("/api")
+  );
+  
+  if (isPublicRoute) {
+    // If user is logged in and tries to access login page, redirect to their dashboard
+    if (pathname === "/login" && authToken && userRole) {
+      const defaultRoute = roleRoutes[userRole]?.[0] || "/login";
+      return NextResponse.redirect(new URL(defaultRoute, req.url));
+    }
     return NextResponse.next();
   }
 
-  // If no role cookie, redirect to login
-  if (!userRole) {
+  // If no token or role, redirect to login
+  if (!authToken || !userRole) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
@@ -38,6 +53,11 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/waiter-dashboard/:path*", "/admin-dashboard/:path*", "/choose-table/:path*"],
+  matcher: [
+    "/login",
+    "/dashboard/:path*", 
+    "/waiter-dashboard/:path*", 
+    "/admin-dashboard/:path*", 
+    "/choose-table/:path*"
+  ],
 };
-

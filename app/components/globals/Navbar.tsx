@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { selectCartCount } from "@/app/store/slices/cartSlice";
 import { openModal } from "@/app/store/slices/modalSlice";
+import { logout } from "@/app/store/slices/authSlice";
 import { LogOut, ShoppingBag, Receipt, UtensilsCrossed, User, Shield, ChefHat, UserPlus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -12,29 +12,22 @@ export function NavBar() {
   const router = useRouter();
   const pathname = usePathname();
   const count = useAppSelector(selectCartCount);
-
-  const [user, setUser] = useState<{ role: string; fullName: string } | null>(
-    null
-  );
-
-  // Load user from localStorage (re-check on route changes)
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      setUser(JSON.parse(stored));
-    } else {
-      setUser(null);
-    }
-  }, [pathname]);
+  
+  // Get user from Redux store
+  const { user, isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
 
   const handleLogout = async () => {
+    // Clear cookies via API
     await fetch("/api/logout", { method: "POST" });
-    localStorage.removeItem("user");
-    setUser(null);
+    
+    // Clear Redux state (this also clears localStorage)
+    dispatch(logout());
+    
     router.push("/login");
   };
 
-  if (!user) return null;
+  // Don't render anything while loading or if not authenticated
+  if (isLoading || !isAuthenticated || !user) return null;
 
   const getRoleBadge = () => {
     const roleConfig = {
@@ -92,7 +85,7 @@ export function NavBar() {
 
                   {/* Bill */}
                   <button
-                    onClick={() => dispatch(openModal({ type: "bill", tableId: "4" }))}
+                    onClick={() => dispatch(openModal({ type: "bill" }))}
                     className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
                   >
                     <Receipt className="w-5 h-5 text-zinc-400 group-hover:text-white transition-colors" />

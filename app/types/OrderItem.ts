@@ -1,14 +1,8 @@
+// Re-export from main types for backward compatibility
+export type { OrderItem, Order, OrderStatus } from "./index";
 
-export interface OrderItem {
-  id: string | number;
-  name: string;
-  quantity: number;
-  price: number;
-  total: number;
-  round: number;
-}
-
+// Legacy state type for backward compatibility
 export interface OrdersState {
-  orders: OrderItem[];
+  orders: import("./index").Order[];
   round: number;
 }

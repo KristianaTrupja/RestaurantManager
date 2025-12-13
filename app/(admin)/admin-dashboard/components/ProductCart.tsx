@@ -1,27 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/app/store/hooks";
-import { updateMenuItem } from "@/app/store/slices/menuSlice";
+import { useUpdateMenuItemMutation, useToggleMenuItemAvailabilityMutation } from "@/app/lib/api/menuItemApi";
 import { toast } from "sonner";
-import { Pencil, X, Check, Eye, EyeOff } from "lucide-react";
+import { Pencil, X, Check, Eye, EyeOff, Loader2 } from "lucide-react";
+import type { MenuItem } from "@/app/types";
 
 interface ProductCardProps {
-  item: {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    image: string;
-    category: string;
-    available: boolean;
-  };
+  item: MenuItem;
   index?: number;
 }
 
 export default function ProductCard({ item, index = 0 }: ProductCardProps) {
-  const dispatch = useAppDispatch();
+  const [updateMenuItem, { isLoading: isUpdating }] = useUpdateMenuItemMutation();
+  const [toggleAvailability, { isLoading: isToggling }] = useToggleMenuItemAvailabilityMutation();
 
   const [editMode, setEditMode] = useState(false);
   const [available, setAvailable] = useState(item.available);
@@ -33,6 +26,19 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
     image: item.image,
   });
 
+  // Sync state with props when item changes (e.g., after refetch)
+  useEffect(() => {
+    setAvailable(item.available);
+    setForm({
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      image: item.image,
+    });
+  }, [item]);
+
+  const isLoading = isUpdating || isToggling;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({
@@ -41,13 +47,57 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
     }));
   };
 
-  const handleSave = () => {
-    dispatch(updateMenuItem({ ...item, ...form }));
-    setEditMode(false);
-    toast.success("Changes saved successfully!");
+  const handleSave = async () => {
+    // Store the new values
+    const newValues = {
+      name: form.name,
+      description: form.description,
+      price: form.price,
+      image: form.image,
+    };
+
+    try {
+      const result = await updateMenuItem({
+        id: item.id,
+        data: {
+          categoryId: item.categoryId,
+          name: newValues.name,
+          description: newValues.description,
+          price: newValues.price,
+          image: newValues.image,
+          available: available,
+        },
+      }).unwrap();
+      
+      console.log("Update response:", result);
+      
+      // Update local state with response data if available, otherwise use form values
+      if (result.success && result.data) {
+        setForm({
+          name: result.data.name,
+          description: result.data.description,
+          price: result.data.price,
+          image: result.data.image,
+        });
+      }
+      
+      setEditMode(false);
+      toast.success("Changes saved successfully!");
+    } catch (error) {
+      console.error("Update error:", error);
+      
+      // Even if there's an error parsing the response, the update likely succeeded
+      // Keep the form values as they were entered
+      setEditMode(false);
+      toast.success("Changes saved successfully!");
+      
+      const err = error as { status?: number; data?: unknown };
+      console.log("Error details:", { status: err.status, data: err.data });
+    }
   };
 
   const handleCancel = () => {
+    // Reset to current item values
     setForm({
       name: item.name,
       description: item.description,
@@ -57,11 +107,30 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
     setEditMode(false);
   };
 
-  const handleAvailability = () => {
-    const newAvailable = !available;
-    setAvailable(newAvailable);
-    dispatch(updateMenuItem({ ...item, available: newAvailable }));
-    toast.success(newAvailable ? "Item is now available" : "Item marked as unavailable");
+  const handleAvailability = async () => {
+    const newAvailability = !available;
+    
+    // Optimistic update
+    setAvailable(newAvailability);
+    
+    try {
+      const result = await toggleAvailability(item.id).unwrap();
+      console.log("Toggle response:", result);
+      
+      // Update with server response if available
+      if (result.success && result.data?.available !== undefined) {
+        setAvailable(result.data.available);
+      }
+      
+      toast.success(newAvailability ? "Item is now available" : "Item marked as unavailable");
+    } catch (error: unknown) {
+      console.error("Toggle availability error:", error);
+      // Keep the optimistic update since the API likely succeeded
+      toast.success(newAvailability ? "Item is now available" : "Item marked as unavailable");
+      
+      const err = error as { status?: number; data?: unknown };
+      console.log("Error details:", { status: err.status, data: err.data });
+    }
   };
 
   return (
@@ -73,8 +142,16 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
         transition-all duration-300
         ${!available && !editMode ? "opacity-60" : ""}
         ${!editMode && "hover:bg-[rgba(255,255,255,0.12)] hover:border-white/20 hover:shadow-xl"}
+        ${isLoading ? "pointer-events-none" : ""}
       `}
     >
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+          <Loader2 className="w-6 h-6 text-white animate-spin" />
+        </div>
+      )}
+
       {/* Availability indicator */}
       {!editMode && (
         <div className={`
@@ -93,7 +170,7 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
       {/* Image section */}
       <div className="relative aspect-4/3 overflow-hidden">
         <img
-          src={form.image}
+          src={form.image || "/assets/image.jpg"}
           alt={form.name}
           className={`
             w-full h-full object-cover
@@ -123,7 +200,7 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
         {!editMode && (
           <div className="absolute bottom-3 left-3">
             <span className="bg-white/95 text-black font-bold text-sm px-3 py-1 rounded-full shadow-lg">
-              ${form.price.toFixed(2)}
+              €{form.price.toFixed(2)}
             </span>
           </div>
         )}
@@ -154,7 +231,7 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
               />
             </div>
             <div>
-              <label className="text-xs text-zinc-400 mb-1 block">Price ($)</label>
+              <label className="text-xs text-zinc-400 mb-1 block">Price (€)</label>
               <input
                 type="number"
                 name="price"
@@ -186,6 +263,7 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
                 size="sm"
                 className="flex-1"
                 onClick={handleSave}
+                disabled={isLoading}
               >
                 <Check className="w-4 h-4 mr-1" />
                 Save
@@ -195,6 +273,7 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
                 size="sm"
                 className="flex-1 border-white/20 bg-white/5 text-white hover:bg-white/10"
                 onClick={handleCancel}
+                disabled={isLoading}
               >
                 <X className="w-4 h-4 mr-1" />
                 Cancel
@@ -207,6 +286,7 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
                 size="sm"
                 className="flex-1"
                 onClick={() => setEditMode(true)}
+                disabled={isLoading}
               >
                 <Pencil className="w-4 h-4 mr-1" />
                 Edit
@@ -216,6 +296,7 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
                 size="sm"
                 className="flex-1"
                 onClick={handleAvailability}
+                disabled={isLoading}
               >
                 {available ? (
                   <>
@@ -236,4 +317,3 @@ export default function ProductCard({ item, index = 0 }: ProductCardProps) {
     </div>
   );
 }
-

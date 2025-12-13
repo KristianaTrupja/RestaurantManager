@@ -3,21 +3,23 @@
 import { useState } from "react";
 import { useAppDispatch } from "@/app/store/hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
+import { useCreateUserMutation } from "@/app/lib/api/userApi";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { UserPlus, X, User, Lock, Shield, Eye, EyeOff } from "lucide-react";
-
-type UserRole = "GUEST" | "WAITER" | "ADMIN";
+import { UserPlus, X, User, Lock, Shield, Eye, EyeOff, Loader2 } from "lucide-react";
+import type { UserRole } from "@/app/types";
 
 export default function CreateUserModal() {
   const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const [createUser, { isLoading }] = useCreateUserMutation();
 
   const [form, setForm] = useState({
     fullName: "",
     username: "",
+    email: "",
     role: "GUEST" as UserRole,
     password: "",
     confirmPassword: "",
@@ -48,34 +50,25 @@ export default function CreateUserModal() {
       return;
     }
 
-    setLoading(true);
-
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: form.fullName,
-          username: form.username,
-          password: form.password,
-          role: form.role,
-        }),
-      });
+      const result = await createUser({
+        fullName: form.fullName,
+        username: form.username,
+        email: form.email || undefined,
+        password: form.password,
+        role: form.role,
+      }).unwrap();
 
-      if (!res.ok) {
-        const data = await res.json();
-        toast.error(data.error || "Failed to create user");
-        setLoading(false);
-        return;
+      if (result.success) {
+        toast.success(`User "${form.fullName}" created successfully!`);
+        dispatch(closeModal());
+      } else {
+        toast.error(result.message || "Failed to create user");
       }
-
-      toast.success(`User "${form.fullName}" created successfully!`);
-      dispatch(closeModal());
-    } catch (error) {
-      toast.error("Failed to create user");
+    } catch (error: unknown) {
+      const err = error as { data?: { message?: string } };
+      toast.error(err.data?.message || "Failed to create user");
     }
-
-    setLoading(false);
   };
 
   const roles: { value: UserRole; label: string; description: string }[] = [
@@ -134,6 +127,22 @@ export default function CreateUserModal() {
               value={form.username}
               onChange={handleChange}
               placeholder="e.g. johndoe"
+              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-400 transition"
+            />
+          </div>
+
+          {/* Email */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-zinc-400">
+              <User className="w-4 h-4" />
+              Email
+            </label>
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="e.g. john@example.com"
               className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-500 focus:outline-none focus:border-purple-400 transition"
             />
           </div>
@@ -240,11 +249,11 @@ export default function CreateUserModal() {
             size="lg"
             className="w-full"
             onClick={handleSubmit}
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? (
+            {isLoading ? (
               <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
                 Creating...
               </span>
             ) : (
@@ -259,4 +268,3 @@ export default function CreateUserModal() {
     </div>
   );
 }
-
