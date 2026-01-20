@@ -69,13 +69,17 @@ export default function BillModal() {
   );
 
   const handleRequestBill = async () => {
+    console.log("[BillModal] Requesting bill, sessionId:", sessionId);
+    
     if (!sessionId) {
       toast.error("Session not found");
       return;
     }
 
     try {
-      await requestBill(sessionId).unwrap();
+      const result = await requestBill(sessionId).unwrap();
+      console.log("[BillModal] Request bill result:", result);
+      
       dispatch(closeModal());
       dispatch(clearOrders());
       dispatch(clearSession());
@@ -83,9 +87,10 @@ export default function BillModal() {
         description: "The waiter has been notified and will bring your bill shortly.",
       });
       router.push("/login");
-    } catch (err) {
-      console.error("Failed to request bill:", err);
-      toast.error("Failed to request bill");
+    } catch (err: unknown) {
+      console.error("[BillModal] Failed to request bill:", err);
+      const errorData = err as { data?: { message?: string }; status?: number };
+      toast.error(`Failed to request bill: ${errorData.data?.message || errorData.status || 'Unknown error'}`);
     }
   };
 

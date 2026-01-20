@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 // Define which roles can access which routes
 const roleRoutes: Record<string, string[]> = {
-  GUEST: ["/dashboard", "/choose-table"],
+  GUEST: ["/dashboard"],
   WAITER: ["/waiter-dashboard"],
   ADMIN: ["/admin-dashboard"],
 };
@@ -57,7 +57,6 @@ export const config = {
     "/login",
     "/dashboard/:path*", 
     "/waiter-dashboard/:path*", 
-    "/admin-dashboard/:path*", 
-    "/choose-table/:path*"
+    "/admin-dashboard/:path*"
   ],
 };

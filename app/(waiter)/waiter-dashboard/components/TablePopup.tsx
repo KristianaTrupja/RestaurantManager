@@ -83,27 +83,37 @@ export default function TablePopup() {
   const handlePrintBill = async () => {
     if (!table) return;
     
+    console.log("[TablePopup] Processing bill, sessionId:", sessionId, "tableId:", table.id);
+    
     try {
       if (sessionId) {
-        await markPaid({ id: sessionId, paymentMethod }).unwrap();
+        // End session first (completes the session)
+        console.log("[TablePopup] Step 1: Ending session");
         await endSession(sessionId).unwrap();
+        
+        // Then mark as paid
+        console.log("[TablePopup] Step 2: Marking as paid with method:", paymentMethod);
+        await markPaid({ id: sessionId, paymentMethod }).unwrap();
       }
       
+      console.log("[TablePopup] Step 3: Unassigning waiter");
       try {
         await assignWaiter({ id: table.id, waiterId: undefined }).unwrap();
       } catch {
-        // Continue even if unassign fails
+        console.log("[TablePopup] Unassign waiter failed (continuing)");
       }
       
+      console.log("[TablePopup] Step 4: Setting table to FREE");
       await updateStatus({ id: table.id, status: "FREE" }).unwrap();
       
       dispatch(closeModal());
       toast.success("Bill processed and table cleared", {
         description: "Table is now available for new guests.",
       });
-    } catch (error) {
-      console.error("Failed to process bill:", error);
-      toast.error("Failed to process bill");
+    } catch (error: unknown) {
+      console.error("[TablePopup] Failed to process bill:", error);
+      const errorData = error as { data?: { message?: string }; status?: number };
+      toast.error(`Failed to process bill: ${errorData.data?.message || errorData.status || 'Unknown error'}`);
     }
   };
 

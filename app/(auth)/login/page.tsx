@@ -42,8 +42,7 @@ export default function LoginPage() {
   const redirectBasedOnRole = (role: string) => {
     switch (role) {
       case "GUEST":
-        // Generic guests still go to choose-table
-        router.push("/choose-table");
+        router.push("/dashboard");
         break;
       case "WAITER":
         router.push("/waiter-dashboard");
